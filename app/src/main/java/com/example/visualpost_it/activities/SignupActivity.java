@@ -34,6 +34,7 @@ public class SignupActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
+    EditText fullnameField;
     EditText nicknameField;
     EditText emailField;
     EditText passwordField;
@@ -57,11 +58,14 @@ public class SignupActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar_signup);
         progressBar.setVisibility(View.GONE);
 
+        fullnameField = findViewById(R.id.fullname_signup);
         nicknameField = findViewById(R.id.nickname_signup);
         emailField = findViewById(R.id.email_signup);
         passwordField = findViewById(R.id.password_signup);
         verifyPasswordField = findViewById(R.id.verify_password_signup);
+
         createAccount = findViewById(R.id.btn_create_account);
+
         linkToLogin = findViewById(R.id.link_login);
 
         mAuth = FirebaseAuth.getInstance();
@@ -96,11 +100,14 @@ public class SignupActivity extends AppCompatActivity {
         final String nickname;
         final String email;
         final String password;
+        final String fullname;
 
         if(!formCompletedAccordingly()){
             return;
         } else {
             enterProgressMode(progressBar);
+            fullname = fullnameField.getText().toString().trim();
+            Log.d(TAG, "createAccount: " + fullname);
             nickname = nicknameField.getText().toString().trim();
             email = emailField.getText().toString().trim();
             password = passwordField.getText().toString().trim();
@@ -111,9 +118,8 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
-                        Log.d(TAG, "nu merge frt" + task.getResult().getUser());
                         if(task.isSuccessful()){
-                            onAuthSucces(Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()), nickname, password);
+                            onAuthSucces(Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()), nickname, password, fullname);
                             stopProgressMode(progressBar);
                         } else {
                             Toast.makeText(SignupActivity.this, "Sign Up Failed",
@@ -124,12 +130,18 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    private void onAuthSucces(FirebaseUser user, String nickname, String password) {
-        writeNewUser(user.getUid(), nickname, user.getEmail(), password);
+    private void onAuthSucces(FirebaseUser user, String nickname, String password, String fullname) {
+        writeNewUser(user.getUid(), nickname, user.getEmail(), password, fullname);
     }
 
-    private void writeNewUser(String userId, String nickname, String email, String password){
-        User user = new User(nickname, email, password);
+    private void writeNewUser(String userId, String nickname, String email, String password, String fullname){
+        User user = new User(nickname, email, password, fullname);
+
+        Log.d(TAG, "writeNewUser: " + user.getEmail());
+        Log.d(TAG, "writeNewUser: " + user.getFullName());
+        Log.d(TAG, "writeNewUser: " + user.getNickname());
+        Log.d(TAG, "writeNewUser: " + user.getPassword());
+        Log.d(TAG, "writeNewUser: " + user.getEmail());
 
         mDatabase.child(userId).setValue(user);
 

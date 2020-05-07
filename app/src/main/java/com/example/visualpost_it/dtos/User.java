@@ -4,17 +4,27 @@ import java.util.Date;
 
 public class User {
 
-    public User(String nickname, String email, String password) {
+    public User(String nickname, String email, String password, String fullName) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.fullName = fullName;
     }
 
     private String nickname;
     private String email;
     private String password;
     private String fullName;
-    private Date dateOfBirth;
+
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
 
     private Gender gender;
 

@@ -1,8 +1,10 @@
 package com.example.visualpost_it.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,10 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
     final String TAG = "MainFragment";
+    TextView fullnameField;
+    TextView emailField;
+    TextView nicknameField;
+    TextView passwordField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +33,19 @@ public class HomeScreenActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         openFragment(new HomeFragment());
+
+        fullnameField = findViewById(R.id.profile_fullname);
+        emailField = findViewById(R.id.profile_email);
+        nicknameField = findViewById(R.id.profile_nickname);
+        passwordField = findViewById(R.id.profile_password);
+
+
+    }
+
+    private void showAllUserData() {
+
+
+
     }
 
     public void openFragment(Fragment fragment) {
@@ -47,7 +66,13 @@ public class HomeScreenActivity extends AppCompatActivity {
                             return true;
                         case R.id.navigation_profile:
                             Log.d(TAG, "switched to profile");
-                            openFragment(new ProfileFragment());
+                            Intent intent = getIntent();
+                            String currentUser_nickname = intent.getStringExtra("nickname");
+                            String currentUser_email = intent.getStringExtra("email");
+                            String currentUser_fullname = intent.getStringExtra("fullname");
+                            String currentUser_password = intent.getStringExtra("password");
+                            showAllUserData();
+                            openFragment(ProfileFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
                             return true;
                         case R.id.navigation_history:
                             Log.d(TAG, "switched to history");

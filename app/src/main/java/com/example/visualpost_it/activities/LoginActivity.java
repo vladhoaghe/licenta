@@ -16,11 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.visualpost_it.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -119,40 +122,23 @@ public class LoginActivity extends AppCompatActivity {
             return;
         } else {
             enterProgressMode(progressBar);
-            email = emailField.getText().toString();
-            password = passwordField.getText().toString();
+            updateUI();
         }
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
 
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-
-                            Log.d(TAG, "signInWithEmail:succes");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                            stopProgressMode(progressBar);
-                        } else {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            updateUI(null);
-                        }
-                    }
-                });
     }
 
     private boolean formCompletedAccordingly() {
 
         boolean valid = true;
 
-        String email = emailField.getText().toString();
-        if(!email.contains("@") || !email.contains(".")){
-            emailField.setError("Incorrect email format");
-            valid=false;
-        } else {
-            emailField.setError(null);
-        }
+//        String email = emailField.getText().toString();
+//        if(!email.contains("@") || !email.contains(".")){
+//            emailField.setError("Incorrect email format");
+//            valid=false;
+//        } else {
+//            emailField.setError(null);
+//        }
 
         String password = passwordField.getText().toString();
         if(TextUtils.isEmpty(password)){
@@ -175,14 +161,66 @@ public class LoginActivity extends AppCompatActivity {
 //        }
 //    }
 
-    private void updateUI(FirebaseUser currentUser) {
-        Intent switchToHomeScreen = new Intent (this, HomeScreenActivity.class);
-        if(currentUser != null){
-            startActivity(switchToHomeScreen);
-        } else {
-            Toast.makeText(LoginActivity.this, "Authentication failed",
-                    Toast.LENGTH_SHORT).show();
-        }
+    private void updateUI() {
+
+        String userEnteredNickname = emailField.getText().toString().trim();
+        String userEnteredPassword = passwordField.getText().toString().trim();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+
+        Query checkUser = reference.orderByChild("nickname").equalTo(userEnteredNickname);
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+
+                if (dataSnapshot.exists()){
+                    emailField.setError(null);
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    String passwordFromDB = dataSnapshot.child(currentUser.getUid()).child("password").getValue(String.class);
+
+                    if(passwordFromDB.equals(userEnteredPassword)){
+                        String emailFromDB = dataSnapshot.child(currentUser.getUid()).child("email").getValue(String.class);
+                        String fullnameFromDB = dataSnapshot.child(currentUser.getUid()).child("fullName").getValue(String.class);
+
+                        Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+
+                        Log.d(TAG, "onDataChange: " + userEnteredNickname);
+                        Log.d(TAG, "onDataChange: " + fullnameFromDB);
+                        Log.d(TAG, "onDataChange: " + emailFromDB);
+                        Log.d(TAG, "onDataChange: " + userEnteredPassword);
+
+                        intent.putExtra("nickname", userEnteredNickname);
+                        intent.putExtra("fullname", fullnameFromDB);
+                        intent.putExtra("email", emailFromDB);
+                        intent.putExtra("password", userEnteredPassword);
+                        stopProgressMode(progressBar);
+
+                        startActivity(intent);
+                    } else {
+                        stopProgressMode(progressBar);
+                        passwordField.setError("Wrong Password");
+                        passwordField.requestFocus();
+                    }
+                } else {
+                    stopProgressMode(progressBar);
+                    emailField.setError("No such user exists");
+                    emailField.requestFocus();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+//        Intent switchToHomeScreen = new Intent (this, HomeScreenActivity.class);
+//        if(currentUser != null){
+//            startActivity(switchToHomeScreen);
+//        } else {
+//            Toast.makeText(LoginActivity.this, "Authentication failed",
+//                    Toast.LENGTH_SHORT).show();
+//        }
     }
 
 

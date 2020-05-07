@@ -34,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="Vlad Hoaghe"
             android:textSize="20sp"
             android:layout_toRightOf="@+id/profile_image"
             android:layout_centerVertical="true"
@@ -42,12 +41,11 @@
             android:layout_marginLeft="10dp"/>
 
         <TextView
-            android:id="@+id/nickname"
+            android:id="@+id/profile_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
-            android:text="vladhoag"
             android:textSize="14sp"
             android:layout_toRightOf="@+id/profile_image"
             android:layout_below="@+id/full_name"
@@ -74,11 +72,11 @@
             android:hint="Full Name">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_fullname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_username_20dp"
-                android:drawablePadding="10dp"
-                android:text="Vlad Hoaghe" />
+                android:drawablePadding="10dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,11 +87,12 @@
             android:layout_marginBottom="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_envelope"
                 android:drawablePadding="10dp"
-                android:text="Vlad Hoaghe"/>
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,11 +118,13 @@
             android:layout_marginBottom="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:drawableLeft="@drawable/ic_privacy"
                 android:drawablePadding="10dp"
-                android:text="password"/>
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 

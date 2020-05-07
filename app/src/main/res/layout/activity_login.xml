@@ -62,7 +62,9 @@
             style="@style/textInputStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_email" />
+            android:drawableLeft="@drawable/ic_username_20dp"
+            android:drawablePadding="10dp"
+            android:hint="@string/login_nickname" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -86,6 +88,8 @@
             style="@style/textInputStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_privacy"
+            android:drawablePadding="10dp"
             android:hint="@string/login_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
