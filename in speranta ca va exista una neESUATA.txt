@@ -1,0 +1,67 @@
+1. background
+2. butoane
+3. scris butoane
+4. subliniatul ala
+5. scrisul de la campurile de completat
+
+
+1.#19647e
+2.#f5e6e8
+3.#19647e
+4.#b38cb4
+5.#19647e
+
+
+1.#08605f
+2.#d6a2ad
+3.#08605f
+4.#c7eae4
+5.#2e6171
+
+1.#142e47
+2.#d19346
+3.#142e47
+4.#922a1a
+5.#546371
+
+1.#faa33c
+2.#255e69
+3.#fafffb
+4.#b4520a
+5.#fafffb
+
+1.#decc46
+2.#171c8f
+3.#f9f9f9
+4.#030663
+5.#030663
+
+1.#1b1f47
+2.#004b86
+3.#fed766
+4.#ffead0
+5.#545a9b
+
+1.#fff1d0
+2.#fff1d0
+3.#fec337
+4.#dd1c1a
+5.#54332a
+
+1.#bc3639
+2.#cf9166
+3.#1f2a80
+4.#cf9166
+5.#1f2a80
+
+1.#79bcb8
+2.#124559
+3.#faa916
+4.#faa916
+5.#012a36
+
+1.#7abf69
+2.#e3e3e5
+3.#221f49
+4.#221f49
+5.#221f49

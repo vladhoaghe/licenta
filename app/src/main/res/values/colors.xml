@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fff1d0</color>
+    <color name="colorPrimaryDark">#54332a</color>
+    <color name="colorAccent">#54332a</color>
+    <color name="appBackgroundColor">#fff1d0</color>
+    <color name="buttonColor">#fff1d0</color>
+    <color name="buttonTextColor">#dd1c1a</color>
+    <color name="hintColor">#dd1c1a</color>
+    <color name="inputTextColor">#54332a</color>
+    <color name="headerTextColor">#D5B978</color>
+</resources>

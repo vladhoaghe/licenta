@@ -1,0 +1,35 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/inputTextColor</item>
+    </style>
+
+    <style name="backgroundColor" parent="Theme.AppCompat">
+        <item name="android:background">@color/appBackgroundColor</item>
+    </style>
+
+    <style name="buttonStyle" parent="Theme.AppCompat">
+        <item name="android:textColor">@color/buttonTextColor</item>
+        <item name="android:background">@color/buttonColor</item>
+    </style>
+
+    <style name="textInputStyle" parent="Theme.AppCompat">
+        <item name="android:textColorHint">@color/hintColor</item>
+        <item name="android:textColor">@color/inputTextColor</item>
+        <item name="colorControlActivated">@color/inputTextColor</item>
+        <item name="colorControlNormal">@color/inputTextColor</item>
+        <item name="colorControlHighlight">@color/inputTextColor</item>
+    </style>
+
+    <style name="HeaderBar">
+        <item name="android:background">@color/headerTextColor</item>
+        <item name="android:titleTextColor">@color/inputTextColor</item>
+    </style>
+
+    <style name="ProgressBar">
+
+    </style>
+
+</resources>
