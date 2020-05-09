@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -26,7 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-import static com.example.visualpost_it.Constants.MAPVIEW_BUNDLE_KEY;
+import static com.example.visualpost_it.util.Constants.MAPVIEW_BUNDLE_KEY;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
@@ -74,8 +73,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
             User user = new User(nickname, email, fullname, password);
             mUserList.add(user);
-            Log.d(TAG, "onCreate: nicky: " + nickname);
-            Log.d(TAG, "onCreate: " + user.getEmail() );
 
             for(User userDeatils: mUserList){
                 Log.d(TAG, "onCreate: " + userDeatils.getEmail() );

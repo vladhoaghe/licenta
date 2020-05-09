@@ -187,16 +187,24 @@ public class SignupActivity extends AppCompatActivity {
         boolean valid = true;
 
         String nickname = nicknameField.getText().toString();
+        String noWhiteSpaces = "(?=\\s+$)";
         if(TextUtils.isEmpty(nickname)){
-            nicknameField.setError("Nickname required!");
+            nicknameField.setError("Field cannot be empty");
+            valid = false;
+        } else if (nickname.length() >= 15){
+            nicknameField.setError("Nickname too long");
             valid = false;
         } else {
             nicknameField.setError(null);
         }
 
         String email = emailField.getText().toString();
-        if(!email.contains("@") || TextUtils.isEmpty(email)){
-            emailField.setError("Invalid email format");
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        if(email.isEmpty()){
+            emailField.setError("Field cannot be empty");
+            valid = false;
+        } else if (!email.matches(emailPattern)){
+            emailField.setError("Invalid email address");
             valid = false;
         } else {
             emailField.setError(null);
@@ -208,6 +216,9 @@ public class SignupActivity extends AppCompatActivity {
         if (!password.equals(verifyPassword)){
             verifyPasswordField.setError("Passwords are not the same");
             Log.w(TAG, "Password are not the same");
+            valid = false;
+        } else if (password.isEmpty()){
+            passwordField.setError("Field cannot be empty");
             valid = false;
         } else {
             Log.d(TAG, "Parola" + password);

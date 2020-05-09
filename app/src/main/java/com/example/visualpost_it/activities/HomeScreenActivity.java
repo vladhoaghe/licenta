@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.visualpost_it.R;
-import com.example.visualpost_it.UserClient;
+import com.example.visualpost_it.util.UserClientSingleton;
 import com.example.visualpost_it.dtos.User;
 import com.example.visualpost_it.dtos.UserLocation;
 import com.example.visualpost_it.fragments.HistoryFragment;
@@ -40,12 +40,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.GeoPoint;
 
-import static com.example.visualpost_it.Constants.ERROR_DIALOG_REQUEST;
-import static com.example.visualpost_it.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
-import static com.example.visualpost_it.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
+import static com.example.visualpost_it.util.Constants.ERROR_DIALOG_REQUEST;
+import static com.example.visualpost_it.util.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static com.example.visualpost_it.util.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
@@ -96,7 +95,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         currentUser_password  = i.getStringExtra("password");
 
         User user = new User(currentUser_nickname, currentUser_email, currentUser_password, currentUser_fullname);
-        ((UserClient) getApplicationContext()).setUser(user);
+        ((UserClientSingleton) getApplicationContext()).setUser(user);
 
         Log.d(TAG, "getProfileDetails: " + currentUser_nickname);
         Log.d(TAG, "getProfileDetails: " + currentUser_email);
@@ -141,8 +140,8 @@ public class HomeScreenActivity extends AppCompatActivity {
                         User user = task.getResult().toObject(User.class);
                         Log.d(TAG, "onComplete: Home Screen" + user.toString());
                         mUserLocation.setUser(user);
-                        ((UserClient) getApplicationContext()).setUser(user);
-                        Log.d(TAG, "onComplete: user set: " + ((UserClient) getApplicationContext()).getUser().toString());
+                        ((UserClientSingleton) getApplicationContext()).setUser(user);
+                        Log.d(TAG, "onComplete: user set: " + ((UserClientSingleton) getApplicationContext()).getUser().toString());
                         getLastKnownLocation();
                     }
                 }
@@ -323,12 +322,12 @@ public class HomeScreenActivity extends AppCompatActivity {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                             Log.d(TAG, "onNavigationItemSelected: Current firebase user" + user.getUid());
-                            Log.d(TAG, "onNavigationItemSelected: Current firebase user" + ((UserClient) getApplicationContext()).getUser().toString());
+                            Log.d(TAG, "onNavigationItemSelected: Current firebase user" + ((UserClientSingleton) getApplicationContext()).getUser().toString());
 
-                            currentUser_nickname = ((UserClient) getApplicationContext()).getUser().getNickname();
-                            currentUser_email = ((UserClient) getApplicationContext()).getUser().getEmail();
-                            currentUser_fullname = ((UserClient) getApplicationContext()).getUser().getFullName();
-                            currentUser_password = ((UserClient) getApplicationContext()).getUser().getPassword();
+                            currentUser_nickname = ((UserClientSingleton) getApplicationContext()).getUser().getNickname();
+                            currentUser_email = ((UserClientSingleton) getApplicationContext()).getUser().getEmail();
+                            currentUser_fullname = ((UserClientSingleton) getApplicationContext()).getUser().getFullName();
+                            currentUser_password = ((UserClientSingleton) getApplicationContext()).getUser().getPassword();
 
                             openFragment(ProfileFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password, mUserLocation));
 

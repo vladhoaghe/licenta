@@ -1,11 +1,11 @@
-package com.example.visualpost_it;
+package com.example.visualpost_it.util;
 
 import android.app.Application;
 
 import com.example.visualpost_it.dtos.User;
 
 
-public class UserClient extends Application {
+public class UserClientSingleton extends Application {
 
     private User user = null;
 
@@ -16,6 +16,5 @@ public class UserClient extends Application {
     public void setUser(User user) {
         this.user = user;
     }
-
 
 }

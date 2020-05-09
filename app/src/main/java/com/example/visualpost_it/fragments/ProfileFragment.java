@@ -42,15 +42,7 @@ public class ProfileFragment extends Fragment {
     private String fullname;
     private String password;
 
-    AppCompatTextView nicknameField;
-    AppCompatTextView topFullnameField;
-    EditText emailField;
-    EditText passwordField;
-    EditText fullnameField;
-    EditText locationField;
-    UserLocation mUserLocation;
-
-    Button signOut;
+    private UserLocation mUserLocation;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -96,7 +88,7 @@ public class ProfileFragment extends Fragment {
         Log.d(TAG, "onCreate: " + mUserLocation);
     }
 
-    public String getAddress(UserLocation mUserLocation){
+    private String getAddress(UserLocation mUserLocation){
 
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         List<Address> addresses = null;
@@ -118,13 +110,15 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        nicknameField = view.findViewById(R.id.profile_nickname);
-        fullnameField = view.findViewById(R.id.profile_fullname);
-        topFullnameField = view.findViewById(R.id.full_name);
-        emailField = view.findViewById(R.id.profile_email);
-        passwordField = view.findViewById(R.id.profile_password);
-        locationField = view.findViewById(R.id.profile_location);
-        signOut = view.findViewById(R.id.sign_out_profile);
+        AppCompatTextView nicknameField = view.findViewById(R.id.profile_nickname);
+        AppCompatTextView topFullnameField = view.findViewById(R.id.full_name);
+
+        EditText fullnameField = view.findViewById(R.id.profile_fullname);
+        EditText emailField = view.findViewById(R.id.profile_email);
+        EditText passwordField = view.findViewById(R.id.profile_password);
+        EditText locationField = view.findViewById(R.id.profile_location);
+
+        Button signOut = view.findViewById(R.id.sign_out_profile);
 
         nickname = "@"+nickname;
         topFullnameField.setText(fullname);
