@@ -1,5 +1,6 @@
 package com.example.visualpost_it.fragments;
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -7,13 +8,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.example.visualpost_it.R;
+import com.example.visualpost_it.activities.HomeScreenActivity;
+import com.example.visualpost_it.activities.LoginActivity;
 import com.example.visualpost_it.dtos.UserLocation;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,6 +50,7 @@ public class ProfileFragment extends Fragment {
     EditText locationField;
     UserLocation mUserLocation;
 
+    Button signOut;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -63,7 +72,7 @@ public class ProfileFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         args.putString(ARG_PARAM3, param3);
         args.putString(ARG_PARAM4, param4);
-        args.putSerializable(ARG_PARAM5, userLocation);
+        args.putParcelable(ARG_PARAM5, userLocation);
         Log.d(TAG, "newInstance: " +  args);
         fragment.setArguments(args);
         return fragment;
@@ -77,7 +86,7 @@ public class ProfileFragment extends Fragment {
             email = getArguments().getString(ARG_PARAM2);
             fullname = getArguments().getString(ARG_PARAM3);
             password = getArguments().getString(ARG_PARAM4);
-            mUserLocation = (UserLocation) getArguments().getSerializable(ARG_PARAM5);
+            mUserLocation = getArguments().getParcelable(ARG_PARAM5);
         }
 
         Log.d(TAG, "onCreate: " + nickname);
@@ -96,10 +105,10 @@ public class ProfileFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "getAddress: " + addresses.get(0));
+        Log.d(TAG, "getAddress: Address" + addresses.get(0));
         String address = addresses.get(0).getAddressLine(0);
         String location = address.substring(address.indexOf(", ") + 1);
-        Log.d(TAG, "getAddress: " + location);
+        Log.d(TAG, "getAddress: Location" + location);
 
         return location.trim();
     }
@@ -115,9 +124,7 @@ public class ProfileFragment extends Fragment {
         emailField = view.findViewById(R.id.profile_email);
         passwordField = view.findViewById(R.id.profile_password);
         locationField = view.findViewById(R.id.profile_location);
-
-
-        locationField.setText(getAddress(mUserLocation));
+        signOut = view.findViewById(R.id.sign_out_profile);
 
         nickname = "@"+nickname;
         topFullnameField.setText(fullname);
@@ -125,30 +132,30 @@ public class ProfileFragment extends Fragment {
 
         emailField.setText(email);
         fullnameField.setText(fullname);
+        locationField.setText(getAddress(mUserLocation));
         passwordField.setText(password);
 
-//        signOut = view.findViewById(R.id.btn_sign_out);
-//        signOut.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                attemptSignOut(v);
-//            }
-//        });
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptSignOut(v);
+            }
+        });
         // Inflate the layout for this fragment
         return view;
     }
 
-//    private void attemptSignOut(View v) {
-//
-//        if(v.getId() == R.id.btn_sign_out){
-//            AuthUI.getInstance().signOut(v.getContext()).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    HomeScreenActivity activity = (HomeScreenActivity) getActivity();
-//                    Intent switchToLoginActivity = new Intent(activity, LoginActivity.class);
-//                    startActivity(switchToLoginActivity);
-//                }
-//            });
-//        }
-//    }
+    private void attemptSignOut(View v) {
+
+        if(v.getId() == R.id.sign_out_profile){
+            AuthUI.getInstance().signOut(v.getContext()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    HomeScreenActivity activity = (HomeScreenActivity) getActivity();
+                    Intent switchToLoginActivity = new Intent(activity, LoginActivity.class);
+                    startActivity(switchToLoginActivity);
+                }
+            });
+        }
+    }
 }

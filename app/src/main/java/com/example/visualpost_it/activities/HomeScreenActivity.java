@@ -23,7 +23,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.visualpost_it.R;
 import com.example.visualpost_it.UserClient;
-import com.example.visualpost_it.adapters.UserRecyclerAdapter;
 import com.example.visualpost_it.dtos.User;
 import com.example.visualpost_it.dtos.UserLocation;
 import com.example.visualpost_it.fragments.HistoryFragment;
@@ -37,7 +36,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -62,8 +60,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     private UserLocation mUserLocation;
     private FirebaseFirestore mDb;
 
-    UserRecyclerAdapter userRecyclerAdapter;
-
     String currentUser_nickname;
     String currentUser_email;
     String currentUser_fullname;
@@ -75,9 +71,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        firestoreAuth();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mDb = FirebaseFirestore.getInstance();
+
+        getProfileDetails();
 
         Log.d(TAG, "onCreate: " + currentUser_email);
         Log.d(TAG, "onCreate: " + currentUser_fullname);
@@ -92,11 +89,19 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     private void getProfileDetails() {
-        Intent i = new Intent();
+        Intent i = getIntent();
         currentUser_nickname  = i.getStringExtra("nickname");
         currentUser_email  = i.getStringExtra("email");
         currentUser_fullname  = i.getStringExtra("fullname");
         currentUser_password  = i.getStringExtra("password");
+
+        User user = new User(currentUser_nickname, currentUser_email, currentUser_password, currentUser_fullname);
+        ((UserClient) getApplicationContext()).setUser(user);
+
+        Log.d(TAG, "getProfileDetails: " + currentUser_nickname);
+        Log.d(TAG, "getProfileDetails: " + currentUser_email);
+        Log.d(TAG, "getProfileDetails: " + currentUser_fullname);
+        Log.d(TAG, "getProfileDetails: " + currentUser_password);
     }
 
     @Override
@@ -115,12 +120,47 @@ public class HomeScreenActivity extends AppCompatActivity {
             }
         }
     }
+    
+    public void getUserDetails(){
+        if(mUserLocation == null){
+            mUserLocation = new UserLocation();
+            Intent i = getIntent();
+            String userId = i.getStringExtra("userId");
+            Log.d(TAG, "getUserDetails: " + userId);
+
+            DocumentReference userRef = mDb
+                    .collection(getString(R.string.collection_users))
+                    .document(userId);
+
+            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        Log.d(TAG, "onComplete: successfully got the user details");
+
+                        User user = task.getResult().toObject(User.class);
+                        Log.d(TAG, "onComplete: Home Screen" + user.toString());
+                        mUserLocation.setUser(user);
+                        ((UserClient) getApplicationContext()).setUser(user);
+                        Log.d(TAG, "onComplete: user set: " + ((UserClient) getApplicationContext()).getUser().toString());
+                        getLastKnownLocation();
+                    }
+                }
+            });
+        } else {
+            Log.d(TAG, "getUserDetails: user Location null");
+            getLastKnownLocation();
+        }
+    }
 
     private void saveUserLocation(){
         if(mUserLocation != null){
+            Intent i = getIntent();
+            String userId = i.getStringExtra("userId");
+            Log.d(TAG, "saveUserLocation: " + userId);
             DocumentReference locationReference = mDb
                     .collection(getString(R.string.collection_user_locations))
-                    .document(FirebaseAuth.getInstance().getUid());
+                    .document(userId);
             
             locationReference.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -133,33 +173,6 @@ public class HomeScreenActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private void firestoreAuth(){
-
-        Intent i = getIntent();
-        String userId = i.getStringExtra("userId");
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
-        Log.d(TAG, "firestoreAuth: user id" + userId);
-
-        DocumentReference userRef = db.collection(getString(R.string.collection_users))
-                .document(userId);
-
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "onComplete: successfully set the user client.");
-                    User user = task.getResult().toObject(User.class);
-                    Log.d(TAG, "onComplete: Login " + user.toString());
-                    ((UserClient) (getApplicationContext())).setUser(user);
-                }
-            }
-        });
     }
 
     private void getLastKnownLocation(){
@@ -184,9 +197,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     private boolean checkMapServices(){
         if(isServicesOK()){
-            if(isMapsEnabled()){
-                return true;
-            }
+            return isMapsEnabled();
         }
         return false;
     }
@@ -263,13 +274,10 @@ public class HomeScreenActivity extends AppCompatActivity {
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
         mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionGranted = true;
             }
         }
     }
@@ -278,18 +286,15 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: called.");
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if(mLocationPermissionGranted){
-                    Log.d(TAG, "onActivityResult: " + currentUser_email);
-                    Log.d(TAG, "onActivityResult: " + currentUser_fullname);
-                    Log.d(TAG, "onActivityResult: " + currentUser_nickname);
-                    openFragment(HomeFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
-                    getUserDetails();
-                }
-                else{
-                    getLocationPermission();
-                }
+        if (requestCode == PERMISSIONS_REQUEST_ENABLE_GPS) {
+            if (mLocationPermissionGranted) {
+                Log.d(TAG, "onActivityResult: " + currentUser_email);
+                Log.d(TAG, "onActivityResult: " + currentUser_fullname);
+                Log.d(TAG, "onActivityResult: " + currentUser_nickname);
+                openFragment(HomeFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
+                getUserDetails();
+            } else {
+                getLocationPermission();
             }
         }
 
@@ -297,40 +302,9 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_cnt, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    public void getUserDetails(){
-        if(mUserLocation == null){
-            mUserLocation = new UserLocation();
-            Intent i = getIntent();
-            String userId = i.getStringExtra("userId");
-
-            DocumentReference userRef = mDb
-                    .collection(getString(R.string.collection_users))
-                    .document(userId);
-
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "onComplete: successfully got the user details");
-
-                        User user = task.getResult().toObject(User.class);
-                        Log.d(TAG, "onComplete: Home Screen" + user.toString());
-                        mUserLocation.setUser(user);
-                        ((UserClient) getApplicationContext()).setUser(user);
-                        Log.d(TAG, "onComplete: user set: " + ((UserClient) getApplicationContext()).getUser().toString());
-                        getLastKnownLocation();
-
-                    }
-                }
-            });
-        } else {
-            getLastKnownLocation();
-        }
     }
 
     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
@@ -345,20 +319,24 @@ public class HomeScreenActivity extends AppCompatActivity {
                             return true;
                         case R.id.navigation_profile:
                             Log.d(TAG, "switched to profile");
+                            getUserDetails();
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                            Log.d(TAG, "onNavigationItemSelected: Current firebase user" + user.getUid());
+                            Log.d(TAG, "onNavigationItemSelected: Current firebase user" + ((UserClient) getApplicationContext()).getUser().toString());
+
                             currentUser_nickname = ((UserClient) getApplicationContext()).getUser().getNickname();
                             currentUser_email = ((UserClient) getApplicationContext()).getUser().getEmail();
                             currentUser_fullname = ((UserClient) getApplicationContext()).getUser().getFullName();
                             currentUser_password = ((UserClient) getApplicationContext()).getUser().getPassword();
-                            Log.d(TAG, "onNavigationItemSelected: " + ((UserClient) getApplicationContext()).getUser().toString());
+
                             openFragment(ProfileFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password, mUserLocation));
-                            getUserDetails();
 
                             return true;
                         case R.id.navigation_history:
                             Log.d(TAG, "switched to history");
                             openFragment(new HistoryFragment());
                             return true;
-
                     }
 
                     return false;
