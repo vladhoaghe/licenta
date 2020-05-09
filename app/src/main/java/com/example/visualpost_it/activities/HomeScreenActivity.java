@@ -36,7 +36,7 @@ import static com.example.visualpost_it.Constants.PERMISSIONS_REQUEST_ENABLE_GPS
 public class HomeScreenActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
-    final String TAG = "MainFragment";
+    final String TAG = "HomeScreenActivity";
     TextView fullnameField;
     TextView emailField;
     TextView nicknameField;
@@ -44,13 +44,22 @@ public class HomeScreenActivity extends AppCompatActivity {
     private boolean mLocationPermissionGranted = false;
     UserRecyclerAdapter userRecyclerAdapter;
 
+    String currentUser_nickname;
+    String currentUser_email;
+    String currentUser_fullname;
+    String currentUser_password;
+
     @Override
     protected void onResume() {
         super.onResume();
         openFragment(new HomeFragment());
         if(checkMapServices()){
             if(mLocationPermissionGranted){
-                openFragment(new HomeFragment());
+                getUserDetails();
+                Log.d(TAG, "onResume: " + currentUser_email);
+                Log.d(TAG, "onResume: " + currentUser_fullname);
+                Log.d(TAG, "onResume: " + currentUser_nickname);
+                openFragment(HomeFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
             } else {
                 getLocationPermission();
             }
@@ -63,7 +72,12 @@ public class HomeScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        openFragment(new HomeFragment());
+        getUserDetails();
+        Log.d(TAG, "onCreate: " + currentUser_email);
+        Log.d(TAG, "onCreate: " + currentUser_fullname);
+        Log.d(TAG, "onCreate: " + currentUser_nickname);
+        openFragment(HomeFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
+
 
         fullnameField = findViewById(R.id.profile_fullname);
         emailField = findViewById(R.id.profile_email);
@@ -114,7 +128,11 @@ public class HomeScreenActivity extends AppCompatActivity {
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-            openFragment(new HomeFragment());
+            getUserDetails();
+            Log.d(TAG, "getLocationPermission: " + currentUser_email);
+            Log.d(TAG, "getLocationPermission: " + currentUser_fullname);
+            Log.d(TAG, "getLocationPermission: " + currentUser_nickname);
+            openFragment(HomeFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -166,7 +184,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
                 if(mLocationPermissionGranted){
-                    openFragment(new HomeFragment());
+                    getUserDetails();
+                    Log.d(TAG, "onActivityResult: " + currentUser_email);
+                    Log.d(TAG, "onActivityResult: " + currentUser_fullname);
+                    Log.d(TAG, "onActivityResult: " + currentUser_nickname);
+                    openFragment(HomeFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
                 }
                 else{
                     getLocationPermission();
@@ -183,6 +205,14 @@ public class HomeScreenActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    public void getUserDetails(){
+        Intent intent = getIntent();
+        currentUser_nickname = intent.getStringExtra("nickname");
+        currentUser_email = intent.getStringExtra("email");
+        currentUser_fullname = intent.getStringExtra("fullname");
+        currentUser_password = intent.getStringExtra("password");
+    }
+
     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -190,21 +220,12 @@ public class HomeScreenActivity extends AppCompatActivity {
                     switch(menuItem.getItemId()) {
                         case R.id.navigation_home:
                             Log.d(TAG, "Switched to home");
-                            Intent intent1 = getIntent();
-                            String nickname = intent1.getStringExtra("nickname");
-                            String email = intent1.getStringExtra("email");
-                            String fullname = intent1.getStringExtra("fullname");
-                            String password = intent1.getStringExtra("password");
-                            openFragment(HomeFragment.newInstance(nickname, email, fullname, password));
+                            getUserDetails();
+                            openFragment(HomeFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
                             return true;
                         case R.id.navigation_profile:
                             Log.d(TAG, "switched to profile");
-                            Intent intent = getIntent();
-                            String currentUser_nickname = intent.getStringExtra("nickname");
-                            String currentUser_email = intent.getStringExtra("email");
-                            String currentUser_fullname = intent.getStringExtra("fullname");
-                            String currentUser_password = intent.getStringExtra("password");
-
+                            getUserDetails();
                             openFragment(ProfileFragment.newInstance(currentUser_nickname, currentUser_email, currentUser_fullname, currentUser_password));
                             return true;
                         case R.id.navigation_history:
