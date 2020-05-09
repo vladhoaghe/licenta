@@ -107,7 +107,6 @@ public class SignupActivity extends AppCompatActivity {
         } else {
             enterProgressMode(progressBar);
             fullname = fullnameField.getText().toString().trim();
-            Log.d(TAG, "createAccount: " + fullname);
             nickname = nicknameField.getText().toString().trim();
             email = emailField.getText().toString().trim();
             password = passwordField.getText().toString().trim();
@@ -117,6 +116,8 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                        Log.d(TAG, "onComplete: " + currentUser.getEmail());
                         Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
                         if(task.isSuccessful()){
                             onAuthSucces(Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()), nickname, password, fullname);

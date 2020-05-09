@@ -27,15 +27,11 @@ public class ProfileFragment extends Fragment {
 
     private static final String TAG = "Profile Fragment";
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "nickname";
     private static final String ARG_PARAM2 = "email";
     private static final String ARG_PARAM3 = "fullname";
     private static final String ARG_PARAM4 = "password";
 
-    // TODO: Rename and change types of parameters
     private String nickname;
     private String email;
     private String fullname;
@@ -105,6 +101,7 @@ public class ProfileFragment extends Fragment {
         nickname = "@"+nickname;
         topFullnameField.setText(fullname);
         nicknameField.setText(nickname);
+
         emailField.setText(email);
         fullnameField.setText(fullname);
         passwordField.setText(password);

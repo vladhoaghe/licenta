@@ -16,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.visualpost_it.R;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +27,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -169,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
         Query checkUser = reference.orderByChild("nickname").equalTo(userEnteredNickname);
+        checkUser.keepSynced(true);
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -176,12 +182,25 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (dataSnapshot.exists()){
                     emailField.setError(null);
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String passwordFromDB = dataSnapshot.child(currentUser.getUid()).child("password").getValue(String.class);
 
-                    if(passwordFromDB.equals(userEnteredPassword)){
-                        String emailFromDB = dataSnapshot.child(currentUser.getUid()).child("email").getValue(String.class);
-                        String fullnameFromDB = dataSnapshot.child(currentUser.getUid()).child("fullName").getValue(String.class);
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    Log.d(TAG, "onDataChange: " + dataSnapshot.getValue());
+                    String value = dataSnapshot.getValue().toString();
+                    String userId = value.substring(value.indexOf("{") + 1, value.indexOf("="));
+                    Log.d(TAG, "onDataChange: userID" + userId);
+
+                    String passwordFromDB = dataSnapshot.child(userId).child("password").getValue(String.class);
+
+                    Log.d(TAG, "onDataChange: data snapshot: " + dataSnapshot.child(userId));
+                    Log.d(TAG, "onDataChange: password from db: " + passwordFromDB);
+                    Log.d(TAG, "onDataChange: user id " + userId);
+
+                    Log.d(TAG, "onDataChange: user password " + userEnteredPassword);
+                    Log.d(TAG, "onDataChange: user nickname " + userEnteredNickname);
+
+                    if(Objects.requireNonNull(passwordFromDB).equals(userEnteredPassword)){
+                        String emailFromDB = dataSnapshot.child(userId).child("email").getValue(String.class);
+                        String fullnameFromDB = dataSnapshot.child(userId).child("fullName").getValue(String.class);
 
                         Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
 
