@@ -24,6 +24,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Objects;
 
@@ -33,6 +37,7 @@ public class SignupActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+    private FirebaseFirestore mDb;
 
     EditText fullnameField;
     EditText nicknameField;
@@ -46,6 +51,9 @@ public class SignupActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     ProgressBar progressBar;
+
+    @ServerTimestamp
+    FirebaseFirestoreSettings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +78,7 @@ public class SignupActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        mDb = FirebaseFirestore.getInstance();
 
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,8 +125,6 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        Log.d(TAG, "onComplete: " + currentUser.getEmail());
                         Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
                         if(task.isSuccessful()){
                             onAuthSucces(Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()), nickname, password, fullname);
@@ -136,7 +143,9 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void writeNewUser(String userId, String nickname, String email, String password, String fullname){
-        User user = new User(nickname, email, password, fullname);
+        User user = new User(userId, nickname, email, password, fullname);
+
+        settings = new FirebaseFirestoreSettings.Builder().build();
 
         Log.d(TAG, "writeNewUser: " + user.getEmail());
         Log.d(TAG, "writeNewUser: " + user.getFullName());
@@ -145,6 +154,20 @@ public class SignupActivity extends AppCompatActivity {
         Log.d(TAG, "writeNewUser: " + user.getEmail());
 
         mDatabase.child(userId).setValue(user);
+        mDb.setFirestoreSettings(settings);
+
+        DocumentReference newUserRef = mDb
+                .collection(getString(R.string.collection_users))
+                .document(FirebaseAuth.getInstance().getUid());
+
+        newUserRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    switchToLoginActivity();
+                }
+            }
+        });
 
         startActivity(new Intent(SignupActivity.this, MainActivity.class));
         finish();

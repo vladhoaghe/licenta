@@ -4,18 +4,38 @@ import java.util.Date;
 
 public class User {
 
-    public User(String nickname, String email, String password, String fullName) {
+    public User(String userId, String nickname, String email, String password, String fullName) {
+        this.userId = userId;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.fullName = fullName;
     }
 
+    public User(String nickname, String email, String password, String fullName) {
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+    }
+    public User(){
+
+    }
+
+    private String userId;
     private String nickname;
     private String email;
     private String password;
     private String fullName;
 
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getFullName() {
         return fullName;
@@ -24,9 +44,6 @@ public class User {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
-
-
-    private Gender gender;
 
 
     public String getNickname() {
@@ -53,4 +70,13 @@ public class User {
         this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", fullName='" + fullName + '\'' +
+                '}';
+    }
 }

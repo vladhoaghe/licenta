@@ -31,4 +31,8 @@
 
     <string name="profile_fragment">Profile Fragment</string>
     <string name="google_maps_api_key">AIzaSyAjNbqvrsPZ2bzZCuuAxcpoEP9QHGhJquQ</string>
+
+    <string name="collection_users">Users</string>
+    <string name="collection_user_locations">User Locations</string>
+
 </resources>
