@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -45,6 +47,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     //widgets
     private RecyclerView mHomeFragmentRecyclerView;
     private MapView mMapView;
+    private Spinner mSpinner;
 
     //vars
     private ArrayList<User> mUserList = new ArrayList<>();
@@ -89,6 +92,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        //spinner
+        mSpinner = view.findViewById(R.id.places_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(), R.array.types_of_places, R.layout.layout_spinner);
+        adapter.setDropDownViewResource(R.layout.layout_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+
         mHomeFragmentRecyclerView = view.findViewById(R.id.nearby_places_recycler_view);
         mMapView = (MapView) view.findViewById(R.id.nearby_places_map);
 
@@ -121,6 +131,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
 
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
         if (mapViewBundle == null) {

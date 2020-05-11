@@ -3,24 +3,68 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:textColor="@color/headerTextColor"
-        android:id="@+id/username"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bordered_layout"
+        android:paddingTop="2dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="@color/inputTextColor"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        android:layout_marginTop="5dp"
-        android:id="@+id/email"/>
+        <ImageView
+            android:id="@+id/place_img"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_user_120dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="@color/headerTextColor"
+            android:layout_toEndOf="@+id/place_img"
+            android:id="@+id/username"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/inputTextColor"
+            android:layout_toEndOf="@+id/place_img"
+            android:layout_below="@+id/username"
+            android:layout_marginTop="5dp"
+            android:id="@+id/email"/>
+
+        <ImageButton
+            android:id="@+id/place_favorite_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@color/appBackgroundColor"
+            android:paddingTop="5dp"
+            android:paddingStart="1dp"
+            android:paddingEnd="2.5dp"
+            android:src="@drawable/ic_favorite_20dp"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/place_favorite_btn"
+            android:background="@color/appBackgroundColor"
+            android:paddingTop="5dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="5dp"
+            android:src="@drawable/btn_place_not_seen_20dp"
+            />
+
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

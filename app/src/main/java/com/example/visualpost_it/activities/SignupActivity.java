@@ -52,9 +52,6 @@ public class SignupActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
 
-    @ServerTimestamp
-    FirebaseFirestoreSettings settings;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +92,6 @@ public class SignupActivity extends AppCompatActivity {
                 switchToLoginActivity();
             }
         });
-
     }
 
     @Override
@@ -103,7 +99,6 @@ public class SignupActivity extends AppCompatActivity {
         switchToMainActivity();
         super.onBackPressed();
     }
-
 
     private void createAccount() {
         final String nickname;
@@ -122,39 +117,32 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
-                        if(task.isSuccessful()){
-                            onAuthSucces(Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()), nickname, password, fullname);
-                            stopProgressMode(progressBar);
-                        } else {
-                            Toast.makeText(SignupActivity.this, "Sign Up Failed",
-                                    Toast.LENGTH_LONG).show();
-                        }
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
+                    if(task.isSuccessful()){
+                        writeNewUser(task.getResult().getUser().getUid(), nickname,
+                                task.getResult().getUser().getEmail(), password, fullname);
+                        stopProgressMode(progressBar);
+                    } else {
+                        Toast.makeText(SignupActivity.this, "Sign Up Failed",
+                                Toast.LENGTH_LONG).show();
                     }
-                });
-
-    }
-
-    private void onAuthSucces(FirebaseUser user, String nickname, String password, String fullname) {
-        writeNewUser(user.getUid(), nickname, user.getEmail(), password, fullname);
+                }
+            });
     }
 
     private void writeNewUser(String userId, String nickname, String email, String password, String fullname){
         User user = new User(userId, nickname, email, password, fullname);
 
-        settings = new FirebaseFirestoreSettings.Builder().build();
-
-        Log.d(TAG, "writeNewUser: " + user.getEmail());
-        Log.d(TAG, "writeNewUser: " + user.getFullName());
-        Log.d(TAG, "writeNewUser: " + user.getNickname());
-        Log.d(TAG, "writeNewUser: " + user.getPassword());
-        Log.d(TAG, "writeNewUser: " + user.getEmail());
+        Log.d(TAG, "writeNewUser: user Id: " + user.getUserId());
+        Log.d(TAG, "writeNewUser: email: " + user.getEmail());
+        Log.d(TAG, "writeNewUser: fullname: " + user.getFullName());
+        Log.d(TAG, "writeNewUser: nickname: " + user.getNickname());
+        Log.d(TAG, "writeNewUser: password: " + user.getPassword());
 
         mDatabase.child(userId).setValue(user);
-        mDb.setFirestoreSettings(settings);
 
         DocumentReference newUserRef = mDb
                 .collection(getString(R.string.collection_users))
@@ -169,7 +157,6 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        startActivity(new Intent(SignupActivity.this, MainActivity.class));
         finish();
     }
 

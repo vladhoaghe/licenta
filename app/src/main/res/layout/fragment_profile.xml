@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ProfileFragment"
     android:background="@color/appBackgroundColor"
-    android:id="@+id/profile_container"
-    >
+    android:id="@+id/profile_container">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +22,7 @@
 
             <Button
                 android:id="@+id/sign_out_profile"
-                style="@style/buttonStyle"
+                style="@style/signOutButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -32,7 +31,7 @@
                 android:layout_marginEnd="10dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:background="@drawable/button_style"
+                android:background="@drawable/button_style_sign_out"
                 android:drawablePadding="10dp"
                 android:drawableStart="@drawable/ic_sign_out"
                 android:text="Sign Out" />
@@ -79,15 +78,15 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/inputTextColor"
                 android:layout_marginBottom="10dp"
-                android:background="@color/appBackgroundColor"
-
                 android:hint="Full Name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/profile_fullname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/inputTextColor"
                     android:drawableLeft="@drawable/ic_username_20dp"
                     android:drawablePadding="10dp" />
 
@@ -96,6 +95,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/inputTextColor"
                 android:hint="Email"
                 android:layout_marginBottom="10dp">
 
@@ -103,6 +103,7 @@
                     android:id="@+id/profile_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/inputTextColor"
                     android:drawableLeft="@drawable/ic_envelope"
                     android:drawablePadding="10dp"
                     />
@@ -112,12 +113,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/inputTextColor"
                 android:hint="Phone Number"
                 android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/inputTextColor"
                     android:drawableLeft="@drawable/ic_call"
                     android:drawablePadding="10dp"
                     android:text="0762 125 139"/>
@@ -127,6 +130,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/inputTextColor"
+
                 android:hint="Current Location"
                 android:layout_marginBottom="10dp">
 
@@ -134,6 +139,7 @@
                     android:id="@+id/profile_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/inputTextColor"
                     android:drawableLeft="@drawable/ic_maps_20dp"
                     android:drawablePadding="10dp"
                     />
@@ -143,6 +149,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/inputTextColor"
                 android:hint="Password"
                 android:layout_marginBottom="10dp">
 
@@ -150,6 +157,7 @@
                     android:id="@+id/profile_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/inputTextColor"
                     android:inputType="textPassword"
                     android:drawableLeft="@drawable/ic_privacy"
                     android:drawablePadding="10dp"
@@ -160,7 +168,6 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/buttonStyle"
                 android:background="@drawable/button_style"
                 android:text="Update"/>
 

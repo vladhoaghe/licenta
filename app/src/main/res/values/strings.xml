@@ -35,4 +35,12 @@
     <string name="collection_users">Users</string>
     <string name="collection_user_locations">User Locations</string>
 
+    <string-array name="types_of_places">
+        <item>Museums</item>
+        <item>Castles</item>
+        <item>Monuments</item>
+        <item>Schools</item>
+        <item>Restaurants</item>
+    </string-array>
+
 </resources>

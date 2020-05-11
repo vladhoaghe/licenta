@@ -2,7 +2,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/appBackgroundColor">
+    android:background="@color/appBackgroundColor"
+    android:layout_gravity="center_vertical"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,22 +13,57 @@
         android:weightSum="100"
         android:background="@color/appBackgroundColor">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="50"
-            android:id="@+id/nearby_places_recycler_view"/>
-
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/bordered_spinner"
+            >
+                <Spinner
+                android:id="@+id/places_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:spinnerMode="dialog" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="7dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_dropdown_20dp"/>
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/nearby_places_recycler_view"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="50"
-            android:id="@+id/map_container">
+            android:layout_weight="47.5"
+            >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+        <RelativeLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="47.5">
 
             <com.google.android.gms.maps.MapView
+                android:id="@+id/nearby_places_map"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/nearby_places_map" />
+                android:layout_height="match_parent" />
         </RelativeLayout>
 
     </LinearLayout>
