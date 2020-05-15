@@ -23,7 +23,7 @@
             android:src="@drawable/ic_user_120dp"/>
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/place_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
@@ -31,13 +31,13 @@
             android:layout_toEndOf="@+id/place_img" />
 
         <TextView
-            android:id="@+id/email"
+            android:id="@+id/distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/inputTextColor"
             android:layout_toEndOf="@+id/place_img"
-            android:layout_below="@+id/username"
+            android:layout_below="@+id/place_name"
             android:layout_marginTop="5dp" />
 
         <ImageButton

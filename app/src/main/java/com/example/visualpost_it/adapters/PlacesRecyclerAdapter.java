@@ -1,52 +1,58 @@
 package com.example.visualpost_it.adapters;
 
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.visualpost_it.R;
-import com.example.visualpost_it.dtos.User;
+import com.example.visualpost_it.dtos.Place;
+import com.example.visualpost_it.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.ViewHolder>{
+public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<User> mUsers = new ArrayList<>();
+    private ArrayList<Place> placesList;
+    ImageView googlePhoto;
+    private static final String TAG = "PlacesRecyclerAdapter";
 
-    public UserRecyclerAdapter(ArrayList<User> users) {
-        this.mUsers = users;
+    public PlacesRecyclerAdapter(ArrayList<Place> placesList) {
+        this.placesList = placesList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_user_list_item, parent, false);
-        final ViewHolder holder = new ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_places_list_item, parent, false);
+        final PlacesRecyclerAdapter.ViewHolder holder = new PlacesRecyclerAdapter.ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-        ((ViewHolder)holder).username.setText(mUsers.get(position).getNickname());
-        ((ViewHolder)holder).email.setText(mUsers.get(position).getEmail());
+        holder.placeNameTextView.setText(placesList.get(position).getPlaceName());
+        String distanceFormat = String.format(Locale.US, "%.2f", placesList.get(position).getDistance()) +
+                "km";
+        holder.distanceTextView.setText(distanceFormat);
     }
 
     @Override
     public int getItemCount() {
-        return mUsers.size();
+        return placesList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
-        TextView username, email;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView placeNameTextView, distanceTextView;
+        ImageView placePhoto;
         private static final String TAG = "UserRAViewHolder";
 
         //buttons
@@ -56,10 +62,11 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
         private boolean isFavorite = false;
         private boolean isSeen = false;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            username = itemView.findViewById(R.id.username);
-            email = itemView.findViewById(R.id.email);
+            placePhoto = itemView.findViewById(R.id.place_img);
+            placeNameTextView = itemView.findViewById(R.id.place_name);
+            distanceTextView = itemView.findViewById(R.id.distance);
 
             //buttons
             favoritesBtn = itemView.findViewById(R.id.place_favorite_btn);
@@ -102,9 +109,5 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
                 isSeen = !isSeen;
             }
         };
-
-
     }
-
 }
-

@@ -16,9 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.visualpost_it.R;
+import com.example.visualpost_it.dtos.User;
+import com.example.visualpost_it.util.UserClientSingleton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -41,19 +45,32 @@ public class LoginActivity extends AppCompatActivity {
     TextView linkToSignUp;
     TextView linkToForgotPassword;
 
+    TextInputLayout nicknameBox;
+    TextInputLayout passwordBox;
+
     ProgressBar progressBar;
     Button loginButton;
+
+    String currentUser_nickname;
+    String currentUser_password;
+    String currentUser_fullname;
+    String currentUser_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Log.d(TAG, "onCreate: LoginActivity");
+
         toolbar = findViewById(R.id.toolbar_login);
         toolbar.setTitle(TAG);
 
         progressBar = findViewById(R.id.progressBar_login);
         progressBar.setVisibility(View.GONE);
+
+        nicknameBox = findViewById(R.id.login_nickname_box);
+        passwordBox = findViewById(R.id.login_password_box);
 
         nicknameField = findViewById(R.id.login_nickname);
         passwordField = findViewById(R.id.login_password);
@@ -96,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-
+        Log.d(TAG, "attemptLogin: ");
         if(!formCompletedAccordingly()){
             Log.w(TAG, "Form not completed accordingly");
             return;
@@ -120,20 +137,31 @@ public class LoginActivity extends AppCompatActivity {
 
         String password = passwordField.getText().toString();
         if(TextUtils.isEmpty(password)){
-            Toast.makeText(LoginActivity.this, "Password required",
-                    Toast.LENGTH_LONG).show();
+            passwordBox.setError("Password is required");
             valid = false;
         } else {
-            passwordField.setError(null);
+            passwordBox.setError(null);
         }
 
         return valid;
     }
 
-    private void signIn() {
+    private void setProfileDetails(String currentUser_nickname, String currentUser_email, String currentUser_password, String currentUser_fullname) {
 
+        User user = new User(currentUser_nickname, currentUser_email, currentUser_password, currentUser_fullname);
+        ((UserClientSingleton) getApplicationContext()).setUser(user);
+
+        Log.d(TAG, "setProfileDetails: " + currentUser_nickname);
+        Log.d(TAG, "setProfileDetails: " + currentUser_email);
+        Log.d(TAG, "setProfileDetails: " + currentUser_fullname);
+        Log.d(TAG, "setProfileDetails: " + currentUser_password);
+    }
+
+    private void signIn() {
         String userEnteredNickname = nicknameField.getText().toString().trim();
         String userEnteredPassword = passwordField.getText().toString().trim();
+
+        Log.d(TAG, "signIn with user: " + userEnteredNickname + " and password: " + userEnteredPassword );
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
 
@@ -142,39 +170,42 @@ public class LoginActivity extends AppCompatActivity {
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                Log.d(TAG, "signIn: " + dataSnapshot.toString());
 
                 if (dataSnapshot.exists()){
-                    nicknameField.setError(null);
+                    nicknameBox.setError(null);
 
-                    Log.d(TAG, "onDataChange: dataSnapshot: " + dataSnapshot.getValue());
+                    Log.d(TAG, "signIn: dataSnapshot: " + dataSnapshot.getValue());
                     String value = dataSnapshot.getValue().toString();
                     String userId = value.substring(value.indexOf("{") + 1, value.indexOf("="));
-                    Log.d(TAG, "onDataChange: userID: " + userId);
+                    Log.d(TAG, "signIn: userID: " + userId);
 
                     String passwordFromDB = dataSnapshot.child(userId).child("password").getValue(String.class);
 
-                    Log.d(TAG, "onDataChange: data snapshot: " + dataSnapshot.child(userId));
+                    Log.d(TAG, "signIn: data snapshot: " + dataSnapshot.child(userId));
+                    Log.d(TAG, "signIn: passwordFromDB: " + passwordFromDB);
 
                     if(Objects.requireNonNull(passwordFromDB).equals(userEnteredPassword)){
                         String emailFromDB = dataSnapshot.child(userId).child("email").getValue(String.class);
+                        Log.d(TAG, "signIn: emailFromDB: " + emailFromDB);
                         FirebaseAuth.getInstance().signInWithEmailAndPassword(emailFromDB,
                                 passwordFromDB)
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        Log.d(TAG, "onComplete: Ducati tati");
+                                    public void onSuccess(AuthResult authResult) {
+                                        Log.d(TAG, "onSuccess: Ducati tati");
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                         String fullnameFromDB = dataSnapshot.child(userId).child("fullName").getValue(String.class);
 
-                        Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, PermissionsActivity.class);
 
+                        setProfileDetails(userEnteredNickname, emailFromDB, userEnteredPassword, fullnameFromDB);
                         Log.d(TAG, "onDataChange: User Id: " + userId);
                         Log.d(TAG, "onDataChange: userEnteredNickname: " + userEnteredNickname);
                         Log.d(TAG, "onDataChange: fullnameFromDB: " + fullnameFromDB);
@@ -191,13 +222,13 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                     } else {
                         stopProgressMode(progressBar);
-                        passwordField.setError("Wrong Password");
-                        passwordField.requestFocus();
+                        passwordBox.setError("Wrong Password");
+                        passwordBox.requestFocus();
                     }
                 } else {
                     stopProgressMode(progressBar);
-                    nicknameField.setError("No such user exists");
-                    nicknameField.requestFocus();
+                    nicknameBox.setError("No such user exists");
+                    nicknameBox.requestFocus();
                 }
             }
 

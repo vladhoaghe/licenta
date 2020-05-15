@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="100"
-        android:background="@color/appBackgroundColor">
+        android:background="@color/headerTextColor">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -23,11 +23,13 @@
             android:layout_weight="3"
             android:background="@drawable/bordered_spinner"
             >
+<!--            maybe material search button https://www.youtube.com/watch?v=ifoVBdtXsv0-->
                 <Spinner
                 android:id="@+id/places_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="0dp"
+                android:textAlignment="gravity"
                 android:paddingBottom="0dp"
                 android:background="@android:color/transparent"
                 android:gravity="center_vertical"
@@ -48,7 +50,7 @@
             android:id="@+id/nearby_places_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="47.5"
+            android:layout_weight="48.5"
             >
 
         </androidx.recyclerview.widget.RecyclerView>
@@ -58,7 +60,12 @@
             android:id="@+id/map_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="47.5">
+            android:layout_weight="48.5">
+
+<!--            <com.google.android.gms.maps.MapView-->
+<!--                android:id="@+id/nearby_places_map"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent" />-->
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/nearby_places_map"

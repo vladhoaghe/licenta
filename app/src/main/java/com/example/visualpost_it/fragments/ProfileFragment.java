@@ -1,5 +1,6 @@
 package com.example.visualpost_it.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,18 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.example.visualpost_it.R;
 import com.example.visualpost_it.activities.HomeScreenActivity;
 import com.example.visualpost_it.activities.LoginActivity;
+import com.example.visualpost_it.activities.MainActivity;
 import com.example.visualpost_it.dtos.UserLocation;
+import com.example.visualpost_it.util.UserClientSingleton;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,11 +38,9 @@ public class ProfileFragment extends Fragment {
 
     private static final String TAG = "Profile Fragment";
 
-    private static final String ARG_PARAM1 = "nickname";
-    private static final String ARG_PARAM2 = "email";
-    private static final String ARG_PARAM3 = "fullname";
-    private static final String ARG_PARAM4 = "password";
     private static final String ARG_PARAM5 = "userLocation";
+
+    FirebaseAuth firebaseAuth;
 
     private String nickname;
     private String email;
@@ -43,6 +48,7 @@ public class ProfileFragment extends Fragment {
     private String password;
 
     private UserLocation mUserLocation;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -52,39 +58,43 @@ public class ProfileFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2, String param3, String param4, UserLocation userLocation) {
+    public static ProfileFragment newInstance(UserLocation userLocation) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        args.putString(ARG_PARAM3, param3);
-        args.putString(ARG_PARAM4, param4);
+
         args.putParcelable(ARG_PARAM5, userLocation);
         Log.d(TAG, "newInstance: " +  args);
         fragment.setArguments(args);
         return fragment;
     }
 
+    private void setProfileDetails(){
+        nickname = ((UserClientSingleton) getActivity().getApplicationContext()).getUser().getNickname();
+        email = ((UserClientSingleton) getActivity().getApplicationContext()).getUser().getEmail();
+        fullname = ((UserClientSingleton) getActivity().getApplicationContext()).getUser().getFullName();
+        password = ((UserClientSingleton) getActivity().getApplicationContext()).getUser().getPassword();
+
+
+        Log.d(TAG, "setProfileDetails: " + nickname);
+        Log.d(TAG, "setProfileDetails: " + email);
+        Log.d(TAG, "setProfileDetails: " + fullname);
+        Log.d(TAG, "setProfileDetails: " + password);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            nickname = getArguments().getString(ARG_PARAM1);
-            email = getArguments().getString(ARG_PARAM2);
-            fullname = getArguments().getString(ARG_PARAM3);
-            password = getArguments().getString(ARG_PARAM4);
             mUserLocation = getArguments().getParcelable(ARG_PARAM5);
         }
 
-        Log.d(TAG, "onCreate: " + nickname);
-        Log.d(TAG, "onCreate: " + email);
-        Log.d(TAG, "onCreate: " + fullname);
-        Log.d(TAG, "onCreate: " + password);
+        setProfileDetails();
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
         Log.d(TAG, "onCreate: " + mUserLocation);
     }
 
@@ -104,6 +114,39 @@ public class ProfileFragment extends Fragment {
 
         return location.trim();
     }
+
+    private void setupFirebaseListener(){
+        Log.d(TAG, "setupFirebaseListener: setting up the auth state listener");
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if(user != null){
+                    Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
+                } else {
+                    Log.d(TAG, "onAuthStateChanged: signed_out");
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mAuthStateListener != null){
+            FirebaseAuth.getInstance().removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,27 +172,78 @@ public class ProfileFragment extends Fragment {
         locationField.setText(getAddress(mUserLocation));
         passwordField.setText(password);
 
+        setupFirebaseListener();
+
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attemptSignOut(v);
+                Log.d(TAG, "onClick: attempting to sign out the user.");
+                FirebaseAuth.getInstance().signOut();
+//                attemptSignOut(v);
             }
         });
         // Inflate the layout for this fragment
         return view;
     }
 
+    public void alertsignout()
+    {
+        AlertDialog.Builder alertDialog2 = new
+                AlertDialog.Builder(
+                getActivity());
+
+        // Setting Dialog Title
+        alertDialog2.setTitle("Confirm SignOut");
+
+        // Setting Dialog Message
+        alertDialog2.setMessage("Are you sure you want to Signout?");
+
+        // Setting Positive "Yes" Btn
+        alertDialog2.setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Write your code here to execute after dialog
+                        firebaseAuth.signOut();
+                        Intent i = new Intent(getActivity(),
+                                MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        getActivity().finish();
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
+                    }
+                });
+        // Setting Negative "NO" Btn
+        alertDialog2.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Write your code here to execute after dialog
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "You clicked on NO", Toast.LENGTH_SHORT)
+                                .show();
+                        dialog.cancel();
+                    }
+                });
+
+        // Showing Alert Dialog
+        alertDialog2.show();
+
+
+    }
+
     private void attemptSignOut(View v) {
 
         if(v.getId() == R.id.sign_out_profile){
-            AuthUI.getInstance().signOut(v.getContext()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    HomeScreenActivity activity = (HomeScreenActivity) getActivity();
-                    Intent switchToLoginActivity = new Intent(activity, LoginActivity.class);
-                    startActivity(switchToLoginActivity);
-                }
-            });
+//            Log.d(TAG, "attemptSignOut: " + AuthUI.getInstance().);
+//            FirebaseAuth.getInstance().signOut(getActivity().getApplicationContext()).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task) {
+//                    HomeScreenActivity activity = (HomeScreenActivity) getActivity();
+//                    Intent switchToLoginActivity = new Intent(activity, LoginActivity.class);
+//                    startActivity(switchToLoginActivity);
+//                }
+//            });
+            Log.d(TAG, "attemptSignOut: ");
+            alertsignout();
         }
     }
 }

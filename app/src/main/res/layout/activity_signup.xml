@@ -40,7 +40,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signup_fullname_textbox"
+        android:id="@+id/fullname_signup_textbox"
         style="@style/textInputStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -58,19 +58,19 @@
             style="@style/textInputStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_username_20dp"
+            android:drawableStart="@drawable/ic_username_20dp"
             android:drawablePadding="10dp"
             android:hint="@string/hint_fullname"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signup_nickname_textbox"
+        android:id="@+id/nickname_signup_textbox"
         style="@style/textInputStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -83,19 +83,19 @@
             style="@style/textInputStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_username_20dp"
+            android:drawableStart="@drawable/ic_username_20dp"
             android:drawablePadding="10dp"
             android:hint="@string/hint_nickname"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signup_email_textbox"
+        android:id="@+id/email_signup_textbox"
         style="@style/textInputStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -114,16 +114,14 @@
             android:textCursorDrawable="@null" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_textbox"
+        android:id="@+id/password_signup_textbox"
         style="@style/textInputStyle"
 
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:textColorHint="@color/hintColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -150,8 +148,8 @@
         style="@style/textInputStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/inputTextColor"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -179,8 +177,8 @@
         style="@style/buttonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:text="@string/btn_create_account"
         android:background="@drawable/button_style"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -194,8 +192,8 @@
         android:id="@+id/link_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:gravity="center"
         android:text="@string/link_login"
         android:textSize="16sp"

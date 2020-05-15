@@ -1,41 +1,48 @@
 <resources>
     <string name="app_name">Virtual Post-It</string>
+
+    <!--Toolbar-->
     <string name="label_sign_up">Sign Up</string>
     <string name="label_login">Login</string>
     <string name="label_welcome">Virtual Post-It</string>
 
-
+    <!--textbox hints-->
     <string name="hint_fullname">Full name</string>
     <string name="hint_nickname">Nickname</string>
     <string name="hint_email">Enter your e-mail</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="hint_current_location">Current Location</string>
     <string name="hint_enter_password">Enter Password</string>
+    <string name="hint_profile_password">Password</string>
     <string name="hint_verify_password">Verify Password</string>
+    <string name="hint_forgot_password_email">Write your email here...</string>
 
+    <!--Links-->
     <string name="link_login">Already a member? Login</string>
     <string name="link_signup">Don\'t have an account? Sign up</string>
     <string name="link_forgot_password">Forgot password?</string>
 
+    <!--Button text-->
     <string name="btn_login">Login</string>
     <string name="btn_sign_up">Sign up</string>
     <string name="btn_sign_out">Sign out</string>
     <string name="btn_send_email">Send Email</string>
     <string name="btn_create_account">Create Account</string>
 
+    <!--Toasts-->
     <string name="toast_created_succesfully">Account created successfully!</string>
     <string name="toast_created_unsuccesfully">Error on creating account!</string>
 
-    <string name="login_nickname">Nickname</string>
-    <string name="login_password">Password</string>
+    <!--keys-->
+    <string name="google_maps_api_key">AIzaSyCAZXOFxlgwHMn4U63Phzey1SIZzR2PVoQ</string>
 
-    <string name="forgot_password_email">Write your email here...</string>
-
-    <string name="profile_fragment">Profile Fragment</string>
-    <string name="google_maps_api_key">AIzaSyAjNbqvrsPZ2bzZCuuAxcpoEP9QHGhJquQ</string>
-
+    <!--Collections-->
     <string name="collection_users">Users</string>
     <string name="collection_user_locations">User Locations</string>
 
+    <!--Spinner Items-->
     <string-array name="types_of_places">
+        <item> </item>
         <item>Museums</item>
         <item>Castles</item>
         <item>Monuments</item>

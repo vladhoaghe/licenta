@@ -23,6 +23,21 @@ public class UserLocation implements Parcelable {
     public UserLocation() {
     }
 
+    protected UserLocation(Parcel in) {
+    }
+
+    public static final Creator<UserLocation> CREATOR = new Creator<UserLocation>() {
+        @Override
+        public UserLocation createFromParcel(Parcel in) {
+            return new UserLocation(in);
+        }
+
+        @Override
+        public UserLocation[] newArray(int size) {
+            return new UserLocation[size];
+        }
+    };
+
     public GeoPoint getGeoPoint() {
         return geoPoint;
     }
@@ -63,6 +78,5 @@ public class UserLocation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
     }
 }

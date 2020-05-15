@@ -19,6 +19,7 @@ import com.example.visualpost_it.R;
 import com.example.visualpost_it.dtos.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,6 +46,12 @@ public class SignupActivity extends AppCompatActivity {
     EditText passwordField;
     EditText verifyPasswordField;
 
+    TextInputLayout emailBox;
+    TextInputLayout nicknameBox;
+    TextInputLayout passwordBox;
+    TextInputLayout verifyPasswordBox;
+
+
     TextView linkToLogin;
 
     Button createAccount;
@@ -62,6 +69,11 @@ public class SignupActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar_signup);
         progressBar.setVisibility(View.GONE);
+
+        emailBox = findViewById(R.id.email_signup_textbox);
+        nicknameBox = findViewById(R.id.nickname_signup_textbox);
+        passwordBox = findViewById(R.id.password_signup_textbox);
+        verifyPasswordBox = findViewById(R.id.verify_password_textbox);
 
         fullnameField = findViewById(R.id.fullname_signup);
         nicknameField = findViewById(R.id.nickname_signup);
@@ -176,41 +188,44 @@ public class SignupActivity extends AppCompatActivity {
         String nickname = nicknameField.getText().toString();
         String noWhiteSpaces = "(?=\\s+$)";
         if(TextUtils.isEmpty(nickname)){
-            nicknameField.setError("Field cannot be empty");
+            nicknameBox.setError("Field cannot be empty");
             valid = false;
         } else if (nickname.length() >= 15){
-            nicknameField.setError("Nickname too long");
+            nicknameBox.setError("Nickname too long");
             valid = false;
         } else {
-            nicknameField.setError(null);
+            nicknameBox.setError(null);
         }
 
         String email = emailField.getText().toString();
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if(email.isEmpty()){
-            emailField.setError("Field cannot be empty");
+            emailBox.setError("Field cannot be empty");
             valid = false;
         } else if (!email.matches(emailPattern)){
-            emailField.setError("Invalid email address");
+            emailBox.setError("Invalid email address");
             valid = false;
         } else {
-            emailField.setError(null);
+            emailBox.setError(null);
         }
 
         String password = passwordField.getText().toString().trim();
         String verifyPassword = verifyPasswordField.getText().toString().trim();
 
         if (!password.equals(verifyPassword)){
-            verifyPasswordField.setError("Passwords are not the same");
+            passwordBox.setError(null);
+            verifyPasswordBox.setError("Passwords are not the same");
             Log.w(TAG, "Password are not the same");
             valid = false;
         } else if (password.isEmpty()){
-            passwordField.setError("Field cannot be empty");
+            verifyPasswordBox.setError(null);
+            passwordBox.setError("Field cannot be empty");
             valid = false;
         } else {
             Log.d(TAG, "Parola" + password);
             Log.d(TAG, "verificare" + verifyPassword);
-            verifyPasswordField.setError(null);
+            passwordBox.setError(null);
+            verifyPasswordBox.setError(null);
         }
 
         return valid;
