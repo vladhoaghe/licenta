@@ -39,7 +39,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     TextView emailField;
     TextView nicknameField;
     TextView passwordField;
-    private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private UserLocation mUserLocation;
     private FirebaseFirestore mDb;
@@ -47,7 +46,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     String currentUser_nickname;
     String currentUser_email;
     String currentUser_fullname;
-    String currentUser_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

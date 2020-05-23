@@ -9,6 +9,7 @@
     android:paddingBottom="5dp">
 
     <RelativeLayout
+        android:id="@+id/place_container_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bordered_layout"
@@ -45,16 +46,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:paddingTop="7dp"
+            android:paddingEnd="4dp"
             android:background="@color/appBackgroundColor"
             android:src="@drawable/btn_not_favorite_20dp" />
 
-        <ImageButton
-            android:id="@+id/place_not_seen_btn"
+<!--        <ImageButton-->
+<!--            android:id="@+id/place_not_seen_btn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_toStartOf="@+id/place_favorite_btn"-->
+<!--            android:background="@color/appBackgroundColor"-->
+<!--            android:src="@drawable/btn_place_not_seen_20dp" />-->
+
+        <TextView
+            android:id="@+id/go_to_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/place_favorite_btn"
-            android:background="@color/appBackgroundColor"
-            android:src="@drawable/btn_place_not_seen_20dp" />
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/place_favorite_btn"
+            android:textSize="20sp"
+            android:textColor="@color/headerTextColor"
+            android:text="GO"/>
 
     </RelativeLayout>
 

@@ -36,6 +36,9 @@
     <!--keys-->
     <string name="google_maps_api_key">AIzaSyCAZXOFxlgwHMn4U63Phzey1SIZzR2PVoQ</string>
 
+    <!--Chooser intent title-->
+    <string name="choose_direction_app">Titleeeee</string>
+
     <!--Collections-->
     <string name="collection_users">Users</string>
     <string name="collection_user_locations">User Locations</string>
@@ -45,8 +48,8 @@
         <item> </item>
         <item>Museums</item>
         <item>Castles</item>
-        <item>Monuments</item>
-        <item>Schools</item>
+        <item>Parks</item>
+        <item>Gas stations</item>
         <item>Restaurants</item>
     </string-array>
 

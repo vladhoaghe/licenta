@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.visualpost_it.dtos.Place;
-import com.example.visualpost_it.util.DataParser;
-import com.example.visualpost_it.util.DownloadUrl;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -18,24 +16,24 @@ import java.util.Objects;
 public class NearbyPlace extends AsyncTask<String, Void, ArrayList<Place>> {
 
     private static final String TAG = "NearbyPlace";
-    String googlePlacesData;
+    private String googlePlacesData;
 
     public interface AsyncResponse {
         void processFinish(ArrayList<Place> mPlacesList);
     }
 
-    public AsyncResponse delegate = null;
+    private AsyncResponse delegate = null;
 
     public NearbyPlace(AsyncResponse delegate){
         this.delegate = delegate;
     }
 
     @Override
-    protected ArrayList<Place> doInBackground(String... strings) {
+    protected ArrayList<Place> doInBackground(String... params) {
 
-        String url = strings[0];
-        String latitude = strings[1];
-        String longitude = strings[2];
+        String url = params[0];
+        String latitude = params[1];
+        String longitude = params[2];
 
         Log.d(TAG, "doInBackground: " + url);
 
@@ -80,12 +78,12 @@ public class NearbyPlace extends AsyncTask<String, Void, ArrayList<Place>> {
 
             LatLng latLng = new LatLng(placeLatitude, placeLongitude);
             localPlaces.add(new Place(placeName, latLng, distance));
-
         }
 
         for(Place place : localPlaces){
             Log.d(TAG, "showNearbyPlaces: local " + place.toString());
         }
+
         return localPlaces;
     }
 }

@@ -52,6 +52,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -68,21 +70,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM4 = "password";
     private static final String ARG_PARAM5 = "userLocation";
 
-    //arguments from register
-    private String nickname;
-    private String email;
-    private String fullname;
-    private String password;
-
-    //places selected
-    private boolean museumsSelected = false;
-    private boolean castlesSelected = false;
-    private boolean restaurantsSelected = false;
-
     //widgets
     private RecyclerView mHomeFragmentRecyclerView;
     private MapView mMapView;
-    private Spinner mSpinner;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     GoogleMap mMap;
     private PlacesClient placesClient;
@@ -97,19 +87,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     //vars
     private ArrayList<User> mUserList = new ArrayList<>();
     private UserRecyclerAdapter mUserRecyclerAdapter;
-    private PlacesRecyclerAdapter mPlacesRecyclerAdapter;
     private ArrayList<Place> placesList = new ArrayList<>();
 
     public static HomeFragment newInstance(UserLocation userLocation) {
         HomeFragment fragment = new HomeFragment();
-//        Bundle args = new Bundle();
-//        args.putParcelable(ARG_PARAM5, userLocation);
-////        args.putString(ARG_PARAM1, param1);
-////        args.putString(ARG_PARAM2, param2);
-////        args.putString(ARG_PARAM3, param3);
-////        args.putString(ARG_PARAM4, param4);
-//        Log.d(TAG, "newInstance: " +  args);
-//        fragment.setArguments(args);
+//       Bundle args = new Bundle();
+//       args.putParcelable(ARG_PARAM5, userLocation);
+//       args.putString(ARG_PARAM1, param1);
+//       args.putString(ARG_PARAM2, param2);
+//       args.putString(ARG_PARAM3, param3);
+//       args.putString(ARG_PARAM4, param4);
+//       Log.d(TAG, "newInstance: " +  args);
+//       fragment.setArguments(args);
         return fragment;
     }
 
@@ -118,7 +107,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
 
         try {
-            initilizeMap();
+            initializeMap();
         } catch (Exception e) {
             Log.d(TAG, "onCreate: error initializing map");
         }
@@ -128,9 +117,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         placesClient = Places.createClient(mContext);
     }
 
-    private void initilizeMap() {
-        if (googleMap == null )
-        {
+    private void initializeMap() {
+        if (googleMap == null ) {
             mMapView.getMapAsync(this);
         }
     }
@@ -138,12 +126,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         //spinner
-        mSpinner = view.findViewById(R.id.places_spinner);
+        Spinner mSpinner = view.findViewById(R.id.places_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(), R.array.types_of_places, R.layout.layout_spinner);
         adapter.setDropDownViewResource(R.layout.layout_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
@@ -156,34 +144,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                 switch(selectedItem){
                     case "Museums":
-                        museumsSelected = true;
-                        restaurantsSelected = false;
-                        castlesSelected = false;
                         findPlaces("museum", mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-
-                        Log.d(TAG, "onItemSelected: Showing nearby Museums");
-
-                        break;
-                    case "Restaurants":
-                        museumsSelected = false;
-                        restaurantsSelected = true;
-                        castlesSelected = false;
-
-                        findPlaces("restaurant", mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-
                         Log.d(TAG, "onItemSelected: Showing nearby Museums");
                         break;
+
                     case "Castles":
-                        museumsSelected = false;
-                        restaurantsSelected = false;
-                        castlesSelected = true;
+                        findPlaces("castle", mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        Log.d(TAG, "onItemSelected: Showing nearby castles");
+                        break;
+
+                    case "Restaurants":
+                        findPlaces("restaurant", mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        Log.d(TAG, "onItemSelected: Showing nearby restaurants");
+                        break;
+
+                    case "Parks":
+                        findPlaces("park", mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        Log.d(TAG, "onItemSelected: Showing nearby parks");
+                        break;
+
+                    case "Gas stations":
+                        findPlaces("gas", mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        Log.d(TAG, "onItemSelected: Showing nearby gas stations");
                         break;
 
                     default:
                         placesList.clear();
-                        museumsSelected = false;
-                        restaurantsSelected = false;
-                        castlesSelected = false;
                         break;
                 }
             }
@@ -265,19 +251,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initPlacesListRecyclerView() {
-
-        for(Place p : placesList){
+        for(Place p : placesList) {
             Log.d(TAG, "initPlacesListRecyclerView: " + p.toString());
-
         }
-        mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(placesList);
+
+        PlacesRecyclerAdapter mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(placesList, mMap);
 
         mHomeFragmentRecyclerView.setAdapter(mPlacesRecyclerAdapter);
         mHomeFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -292,7 +277,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         mMapView.onResume();
         super.onResume();
-        initilizeMap();
+        initializeMap();
     }
 
     @Override
@@ -309,7 +294,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap map) {
-
         mMap = map;
 
         mMap.setMyLocationEnabled(true);
