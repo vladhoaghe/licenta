@@ -1,5 +1,6 @@
 package com.example.visualpost_it.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
@@ -46,6 +47,8 @@ public class ProfileFragment extends Fragment {
     private String email;
     private String fullname;
     private String password;
+
+    private Context profileContext;
 
     private UserLocation mUserLocation;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -150,6 +153,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        profileContext = container.getContext();
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -178,8 +182,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: attempting to sign out the user.");
-                FirebaseAuth.getInstance().signOut();
-//                attemptSignOut(v);
+                Log.d(TAG, "onClick: signOut instance: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                FirebaseAuth.getInstance().signOut();
+                attemptSignOut(v);
             }
         });
         // Inflate the layout for this fragment
@@ -190,7 +195,7 @@ public class ProfileFragment extends Fragment {
     {
         AlertDialog.Builder alertDialog2 = new
                 AlertDialog.Builder(
-                getActivity());
+                profileContext);
 
         // Setting Dialog Title
         alertDialog2.setTitle("Confirm SignOut");
@@ -203,10 +208,10 @@ public class ProfileFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Write your code here to execute after dialog
-                        firebaseAuth.signOut();
-                        Intent i = new Intent(getActivity(),
-                                MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        getActivity().finish();
+
+                        FirebaseAuth.getInstance().signOut();
+                        Intent i = new Intent(profileContext,
+                                LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
@@ -217,7 +222,7 @@ public class ProfileFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Write your code here to execute after dialog
-                        Toast.makeText(getActivity().getApplicationContext(),
+                        Toast.makeText(profileContext.getApplicationContext(),
                                 "You clicked on NO", Toast.LENGTH_SHORT)
                                 .show();
                         dialog.cancel();

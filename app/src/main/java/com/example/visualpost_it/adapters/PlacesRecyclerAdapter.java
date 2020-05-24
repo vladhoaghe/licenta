@@ -49,10 +49,14 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
 
     private static final String TAG = "PlacesRecyclerAdapter";
 
-    public PlacesRecyclerAdapter(HashMap<String, ArrayList<Place>> dictFavoritePlaces, ArrayList<Place> placesList, GoogleMap mMap) {
-        this.dictFavoritePlaces = dictFavoritePlaces;
+    public PlacesRecyclerAdapter(ArrayList<Place> placesList, GoogleMap mMap) {
         this.mPlacesList = placesList;
         this.mMap = mMap;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mPlacesList.size();
     }
 
     @NonNull
@@ -111,7 +115,34 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
                 }
             }
         });
+        setPlaceIcon(holder, mPlacesList.get(position));
 
+    }
+
+    private void setPlaceIcon(ViewHolder holder, Place place) {
+
+        Log.d(TAG, "setPlaceIcon: " + place.getType());
+
+        switch(place.getType()){
+            case "museum":
+                holder.placePhoto.setBackgroundResource(R.drawable.ic_museum_120dp);
+                break;
+            case "park":
+                holder.placePhoto.setBackgroundResource(R.drawable.ic_park_120dp);
+                break;
+            case "gas":
+                holder.placePhoto.setBackgroundResource(R.drawable.ic_gas_120dp);
+                break;
+            case "castle":
+                holder.placePhoto.setBackgroundResource(R.drawable.ic_fortress_120dp);
+                break;
+            case "restaurant":
+                holder.placePhoto.setBackgroundResource(R.drawable.ic_restaurant_120dp);
+                break;
+            default:
+                holder.placePhoto.setBackgroundResource(R.drawable.ic_user_120dp);
+                break;
+        }
     }
 
     private void checkIfFavoritePlace(ViewHolder holder, Place place){
@@ -256,19 +287,7 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
         v.getContext().startActivity(chooserIntent);
     }
 
-    private static void printMap(Map mp) {
-        Iterator it = mp.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            Log.d(TAG, "printMap: " + pair.getKey() + " = " + pair.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
-        }
-    }
 
-    @Override
-    public int getItemCount() {
-        return mPlacesList.size();
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView placeNameTextView, distanceTextView;

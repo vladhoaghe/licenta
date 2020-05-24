@@ -42,6 +42,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private UserLocation mUserLocation;
     private FirebaseFirestore mDb;
+    private FirebaseAuth mAuth;
 
     String currentUser_nickname;
     String currentUser_email;
@@ -54,6 +55,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseFirestore.getInstance();
 
         getUserDetails();
@@ -73,26 +75,28 @@ public class HomeScreenActivity extends AppCompatActivity {
             mUserLocation = new UserLocation();
 //            Log.d(TAG, "getUserDetails: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            DocumentReference userRef = mDb
-                    .collection(getString(R.string.collection_users))
-                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+            if(firebaseUser != null){
+                DocumentReference userRef = mDb
+                        .collection(getString(R.string.collection_users))
+                        .document(firebaseUser.getUid());
 
+                userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        Log.d(TAG, "onComplete: task: " + task.isSuccessful());
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onComplete: successfully got the user details");
 
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Log.d(TAG, "onComplete: task: " + task.isSuccessful());
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "onComplete: successfully got the user details");
-
-                        User user = task.getResult().toObject(User.class);
-                        Log.d(TAG, "onComplete: Home Screen" + user.toString());
-                        mUserLocation.setUser(user);
-                        Log.d(TAG, "onComplete: user set: " + ((UserClientSingleton) getApplicationContext()).getUser().toString());
-                        getLastKnownLocation();
+                            User user = task.getResult().toObject(User.class);
+                            Log.d(TAG, "onComplete: Home Screen" + user.toString());
+                            mUserLocation.setUser(user);
+                            Log.d(TAG, "onComplete: user set: " + ((UserClientSingleton) getApplicationContext()).getUser().toString());
+                            getLastKnownLocation();
+                        }
                     }
-                }
-            });
+                });
+            }
         } else {
             Log.d(TAG, "getUserDetails: user Location null");
             getLastKnownLocation();

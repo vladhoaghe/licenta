@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/appBackgroundColor"
+    android:background="@color/grey"
     android:layout_gravity="center_vertical"
     >
 
@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="100"
-        android:background="@color/headerTextColor">
+        android:background="@color/grey">
 
         <RelativeLayout
             android:layout_width="match_parent"

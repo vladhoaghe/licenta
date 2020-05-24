@@ -16,6 +16,9 @@ public class Place {
     private String placeId;
     public boolean isFavorite;
 
+    public Place(){
+    }
+
     public Place(String placeName, double latitude, double longitude, float distance, String type) {
         this.placeName = placeName;
         this.latitude = latitude;

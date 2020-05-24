@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,17 +21,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.visualpost_it.R;
 import com.example.visualpost_it.adapters.PlacesRecyclerAdapter;
-import com.example.visualpost_it.adapters.UserRecyclerAdapter;
 import com.example.visualpost_it.util.NearbyPlace;
 import com.example.visualpost_it.dtos.Place;
 import com.example.visualpost_it.util.PlaceComparator;
-import com.example.visualpost_it.dtos.User;
 import com.example.visualpost_it.dtos.UserLocation;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -56,7 +60,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.visualpost_it.util.Constants.MAPVIEW_BUNDLE_KEY;
@@ -81,16 +84,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private Location mLastKnownLocation;
     private LocationCallback locationCallback; //for updating user req if lastknownLocation is null
 
-    private View mapView;
     private Context mContext;
-    GoogleMap googleMap;
+    private GoogleMap googleMap;
 
     //vars
-    private ArrayList<User> mUserList = new ArrayList<>();
-    private UserRecyclerAdapter mUserRecyclerAdapter;
     private ArrayList<Place> placesList = new ArrayList<>();
-    private HashMap<String, ArrayList<Place>> dictFavoritePlaces = new HashMap<>();
-
 
     public static HomeFragment newInstance(UserLocation userLocation) {
         HomeFragment fragment = new HomeFragment();
@@ -221,12 +219,37 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             LatLng latLng = new LatLng(p.getLatitude(), p.getLongitude());
             markerOptions.position(latLng);
             markerOptions.title(p.getPlaceName());
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            Bitmap bitmapPin = getBitmapFromVectorDrawable(getContext());
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmapPin));
 
             mMap.addMarker(markerOptions);
         }
+    }
 
-        mMap.animateCamera(CameraUpdateFactory.zoomOut());
+    private static Bitmap getBitmapFromVectorDrawable(Context context) {
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_pin_35dp);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+    private void initPlacesListRecyclerView() {
+        for(Place p : placesList) {
+            Log.d(TAG, "initPlacesListRecyclerView: " + p.toString());
+        }
+
+        PlacesRecyclerAdapter mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(placesList, mMap);
+
+        mHomeFragmentRecyclerView.setAdapter(mPlacesRecyclerAdapter);
+        mHomeFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private String getUrl(double latitude, double longitude, String nearbyPlaceType){
@@ -254,16 +277,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mMapView.getMapAsync(this);
     }
 
-    private void initPlacesListRecyclerView() {
-        for(Place p : placesList) {
-            Log.d(TAG, "initPlacesListRecyclerView: " + p.toString());
-        }
 
-        PlacesRecyclerAdapter mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(dictFavoritePlaces, placesList, mMap);
-
-        mHomeFragmentRecyclerView.setAdapter(mPlacesRecyclerAdapter);
-        mHomeFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
 
     @Override
     public void onSaveInstanceState(@NotNull Bundle outState) {
