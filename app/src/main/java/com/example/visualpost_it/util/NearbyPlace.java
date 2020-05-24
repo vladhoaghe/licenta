@@ -34,6 +34,7 @@ public class NearbyPlace extends AsyncTask<String, Void, ArrayList<Place>> {
         String url = params[0];
         String latitude = params[1];
         String longitude = params[2];
+        String type = params[3];
 
         Log.d(TAG, "doInBackground: " + url);
 
@@ -48,7 +49,7 @@ public class NearbyPlace extends AsyncTask<String, Void, ArrayList<Place>> {
         DataParser parser = new DataParser();
         nearbyPlaceList = parser.parse(googlePlacesData);
 
-        return showNearbyPlaces(nearbyPlaceList, latitude, longitude);
+        return showNearbyPlaces(nearbyPlaceList, latitude, longitude, type);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class NearbyPlace extends AsyncTask<String, Void, ArrayList<Place>> {
         Log.d(TAG, "onPostExecute: " + places.toString());
     }
 
-    private ArrayList<Place> showNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, String userLatitude, String userLongitude){
+    private ArrayList<Place> showNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, String userLatitude, String userLongitude, String type){
         ArrayList<Place> localPlaces = new ArrayList<>();
 
         for(int i = 0; i < nearbyPlacesList.size(); i++){
@@ -77,7 +78,7 @@ public class NearbyPlace extends AsyncTask<String, Void, ArrayList<Place>> {
             float distance = (results[0]/1000);
 
             LatLng latLng = new LatLng(placeLatitude, placeLongitude);
-            localPlaces.add(new Place(placeName, latLng, distance));
+            localPlaces.add(new Place(placeName, placeLatitude, placeLongitude, distance, type));
         }
 
         for(Place place : localPlaces){

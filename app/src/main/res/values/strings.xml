@@ -42,6 +42,7 @@
     <!--Collections-->
     <string name="collection_users">Users</string>
     <string name="collection_user_locations">User Locations</string>
+    <string name="collection_favorite_places">Favorite Places</string>
 
     <!--Spinner Items-->
     <string-array name="types_of_places">

@@ -56,6 +56,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.visualpost_it.util.Constants.MAPVIEW_BUNDLE_KEY;
@@ -88,6 +89,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private ArrayList<User> mUserList = new ArrayList<>();
     private UserRecyclerAdapter mUserRecyclerAdapter;
     private ArrayList<Place> placesList = new ArrayList<>();
+    private HashMap<String, ArrayList<Place>> dictFavoritePlaces = new HashMap<>();
+
 
     public static HomeFragment newInstance(UserLocation userLocation) {
         HomeFragment fragment = new HomeFragment();
@@ -215,7 +218,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         MarkerOptions markerOptions = new MarkerOptions();
 
         for(Place p: placesList){
-            markerOptions.position(p.getLatLng());
+            LatLng latLng = new LatLng(p.getLatitude(), p.getLongitude());
+            markerOptions.position(latLng);
             markerOptions.title(p.getPlaceName());
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -255,7 +259,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             Log.d(TAG, "initPlacesListRecyclerView: " + p.toString());
         }
 
-        PlacesRecyclerAdapter mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(placesList, mMap);
+        PlacesRecyclerAdapter mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(dictFavoritePlaces, placesList, mMap);
 
         mHomeFragmentRecyclerView.setAdapter(mPlacesRecyclerAdapter);
         mHomeFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
