@@ -1,37 +1,77 @@
 package com.example.visualpost_it.dtos;
 
+import android.graphics.Bitmap;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
 public class Place {
 
+    private static final String TAG = "Place";
+
     private String placeName;
+    private String type;
+    private String placeId;
+    private String placeReference;
+    private String photoReference;
     private double latitude;
     private double longitude;
     private float distance;
-    private String type;
-    private String placeId;
-    public boolean isFavorite;
+    private boolean isFavorite;
+    private Bitmap placePhoto;
 
     public Place(){
     }
 
-    public Place(String placeName, double latitude, double longitude, float distance, String type) {
+    public Place(String placeName, double latitude, double longitude, float distance,
+                 String type, String photoReference, String placeReference) {
         this.placeName = placeName;
         this.latitude = latitude;
         this.longitude = longitude;
         this.distance = distance;
         this.type = type;
+        this.photoReference = photoReference;
+        this.placeReference = placeReference;
     }
 
-    public Place(String placeName, double latitude, double longitude, String type) {
+    //constructor without distance
+    public Place(String placeName, double latitude, double longitude, String type, String photoReference, String placeReference) {
         this.placeName = placeName;
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
+        this.placeReference = placeReference;
+        this.photoReference = photoReference;
+    }
+
+    public Bitmap getPlacePhoto() {
+        return placePhoto;
+    }
+
+    public void setPlacePhoto(Bitmap placePhoto) {
+        this.placePhoto = placePhoto;
+    }
+
+    public String getPlaceReference() {
+        return placeReference;
+    }
+
+    public void setPlaceReference(String placeReference) {
+        this.placeReference = placeReference;
+    }
+
+    public String getPhotoReference() {
+        return photoReference;
+    }
+
+    public void setPhotoReference(String photoReference) {
+        this.photoReference = photoReference;
     }
 
     public boolean isFavorite() {
@@ -73,14 +113,6 @@ public class Place {
     public void setType(String type) {
         this.type = type;
     }
-//
-//    public boolean isFavorite() {
-//        return isFavorite;
-//    }
-//
-//    public void setFavorite(boolean favorite) {
-//        isFavorite = favorite;
-//    }
 
     public float getDistance() {
         return distance;
@@ -98,16 +130,20 @@ public class Place {
         this.placeName = placeName;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Place{" +
                 "placeName='" + placeName + '\'' +
+                ", type='" + type + '\'' +
+                ", placeId='" + placeId + '\'' +
+                ", placeReference='" + placeReference + '\'' +
+                ", photoReference='" + photoReference + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", distance=" + distance +
-                ", type='" + type + '\'' +
-                ", placeId='" + placeId + '\'' +
                 ", isFavorite=" + isFavorite +
+                ", placePhoto=" + placePhoto +
                 '}';
     }
 }

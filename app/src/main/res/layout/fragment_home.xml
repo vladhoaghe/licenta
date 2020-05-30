@@ -51,9 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="48.5"
-            >
-
-        </androidx.recyclerview.widget.RecyclerView>
+            />
 
         <RelativeLayout
             android:id="@+id/map_container"

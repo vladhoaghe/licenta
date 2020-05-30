@@ -43,6 +43,7 @@
     <string name="collection_users">Users</string>
     <string name="collection_user_locations">User Locations</string>
     <string name="collection_favorite_places">Favorite Places</string>
+    <string name="go_back">GO BACK</string>
     <string name="go">GO</string>
 
     <!--Spinner Items-->
@@ -53,6 +54,15 @@
         <item>Parks</item>
         <item>Gas stations</item>
         <item>Restaurants</item>
+    </string-array>
+
+    <string-array name="place_type">
+        <item> </item>
+        <item>museum</item>
+        <item>castle</item>
+        <item>park</item>
+        <item>gas</item>
+        <item>restaurant</item>
     </string-array>
 
 </resources>

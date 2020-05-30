@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
 
     //vars
-    private ArrayList<Place> placesList = new ArrayList<>();
+    private ArrayList<Place> mPlacesList = new ArrayList<>();
 
     public static HomeFragment newInstance(UserLocation userLocation) {
         HomeFragment fragment = new HomeFragment();
@@ -170,7 +170,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         break;
 
                     default:
-                        placesList.clear();
+                        mPlacesList.clear();
                         break;
                 }
             }
@@ -192,18 +192,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private void findPlaces(String type, double latitude, double longitude) {
         mMap.clear();
-        placesList.clear();
+        mPlacesList.clear();
         String url = getUrl(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(), type);
         String lastKnownLatitude = String.valueOf(latitude);
         String lastKnownLongitude = String.valueOf(longitude);
 
-        NearbyPlace nearbyPlace = (NearbyPlace) new NearbyPlace(new NearbyPlace.AsyncResponse() {
+        NearbyPlace nearbyPlace = (NearbyPlace) new NearbyPlace(getContext(), new NearbyPlace.AsyncResponse() {
             @Override
-            public void processFinish(ArrayList<Place> mPlacesList) {
-                placesList = mPlacesList;
-                for(Place p : placesList){
+            public void processFinish(ArrayList<Place> placesList) {
+                mPlacesList = placesList;
+                for(Place p : mPlacesList){
                     Log.d(TAG, "processFinish: " + p.toString());
                 }
+
                 addCustomMarkers(placesList);
 
                 Collections.sort(placesList, new PlaceComparator());
@@ -242,11 +243,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initPlacesListRecyclerView() {
-        for(Place p : placesList) {
+        for(Place p : mPlacesList) {
             Log.d(TAG, "initPlacesListRecyclerView: " + p.toString());
         }
 
-        PlacesRecyclerAdapter mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(placesList, mMap);
+        PlacesRecyclerAdapter mPlacesRecyclerAdapter = new PlacesRecyclerAdapter(mPlacesList, mMap);
 
         mHomeFragmentRecyclerView.setAdapter(mPlacesRecyclerAdapter);
         mHomeFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

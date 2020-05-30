@@ -1,23 +1,30 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+<!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--        <item name="colorAccent">@color/inputTextColor</item>-->
+<!--    </style>-->
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
-        <item name="colorAccent">@color/inputTextColor</item>
+        <item name="colorAccent">@color/inputTextColor</item>c
     </style>
 
-    <style name="backgroundColor" parent="Theme.AppCompat">
+    <style name="CardTheme" parent="Theme.MaterialComponents.DayNight"/>
+
+    <style name="backgroundColor" parent="AppTheme">
         <item name="android:background">@color/appBackgroundColor</item>
     </style>
 
-    <style name="buttonStyle" parent="Theme.AppCompat">
+    <style name="buttonStyle" parent="AppTheme">
         <item name="android:textColor">@color/buttonTextColor</item>
     </style>
-    <style name="signOutButtonStyle" parent="Theme.AppCompat">
+    <style name="signOutButtonStyle" parent="AppTheme">
         <item name="android:textColor">@color/inputTextColor</item>
     </style>
 
-    <style name="textInputStyle" parent="Theme.AppCompat">
+    <style name="textInputStyle" parent="AppTheme">
         <item name="android:textColorHint">@color/hintColor</item>
         <item name="android:textColor">@color/inputTextColor</item>
         <item name="colorControlActivated">@color/inputTextColor</item>

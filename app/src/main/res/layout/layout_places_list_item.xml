@@ -16,7 +16,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/place_container_layout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="100dp"
         android:background="@drawable/bordered_layout"
         android:padding="8dp"
         >
@@ -25,8 +25,8 @@
             android:id="@+id/place_img"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
             />
 
         <TextView

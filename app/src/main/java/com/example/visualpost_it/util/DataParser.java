@@ -39,9 +39,15 @@ public class DataParser {
             longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
             reference = googlePlaceJson.getString("reference");
 
-//            JSONArray photosArray = new JSONArray();
-//            photosArray = googlePlaceJson.getJSONArray("photos");
-//            photoReference = photosArray.getJSONObject(0).getString("photo_reference");
+            JSONArray photosArray = new JSONArray();
+            try {
+                photosArray = googlePlaceJson.getJSONArray("photos");
+                photoReference = photosArray.getJSONObject(0).getString("photo_reference");
+                Log.d(TAG, "getPlace: " + photoReference);
+                googlePlacesMap.put("photo_reference", photoReference);
+            } catch (JSONException e){
+                googlePlacesMap.put("photo_reference", null);
+            }
 
 //            Log.d(TAG, "getPlace: " + placeName);
 //            Log.d(TAG, "getPlace: " + latitude);
@@ -52,7 +58,6 @@ public class DataParser {
             googlePlacesMap.put("lat", latitude);
             googlePlacesMap.put("lng", longitude);
             googlePlacesMap.put("reference", reference);
-//            googlePlacesMap.put("photo_reference", photoReference);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -78,13 +83,13 @@ public class DataParser {
     }
 
     public List<HashMap<String, String>> parse(String jsonData){
-        JSONArray jsonArray = null;
+        JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject;
 
         try {
             jsonObject = new JSONObject(jsonData);
             jsonArray = jsonObject.getJSONArray("results");
-            Log.d(TAG, "parse: ");
+            Log.d(TAG, "parse: " + jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }

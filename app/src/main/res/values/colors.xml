@@ -6,7 +6,7 @@
     <color name="appBackgroundColor">#ffffff</color>
     <color name="buttonColor">#eefcfa</color>
     <color name="buttonTextColor">#ffffff</color>
-    <color name="hintColor">#1a907d</color> 
+    <color name="hintColor">#1a907d</color>
     <color name="inputTextColor">#1a907d</color>
     <color name="headerTextColor">#1a907d</color>
     <color name="grey">#dcdcdc</color>

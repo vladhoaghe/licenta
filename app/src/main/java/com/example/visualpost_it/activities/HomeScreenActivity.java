@@ -13,10 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.visualpost_it.R;
+import com.example.visualpost_it.fragments.FindFragment;
 import com.example.visualpost_it.util.UserClientSingleton;
 import com.example.visualpost_it.dtos.User;
 import com.example.visualpost_it.dtos.UserLocation;
-import com.example.visualpost_it.fragments.HistoryFragment;
+import com.example.visualpost_it.fragments.FavoritesFragment;
 import com.example.visualpost_it.fragments.HomeFragment;
 import com.example.visualpost_it.fragments.ProfileFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -174,9 +175,13 @@ public class HomeScreenActivity extends AppCompatActivity {
                             openFragment(ProfileFragment.newInstance(mUserLocation));
 
                             return true;
-                        case R.id.navigation_history:
-                            Log.d(TAG, "switched to history");
-                            openFragment(new HistoryFragment());
+                        case R.id.navigation_favorites:
+                            Log.d(TAG, "onNavigationItemSelected: switched to favorites");
+                            openFragment(new FavoritesFragment());
+                            return true;
+                        case R.id.navigation_find:
+                            Log.d(TAG, "onNavigationItemSelected: switched to find" );
+                            openFragment(new FindFragment());
                             return true;
                     }
 
